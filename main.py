@@ -1,5 +1,5 @@
-import lexico as lexer
-import sintactico as parser
+from lexico import lexer
+from sintactico import parser
 
 tabla_simbolos = {}
 
@@ -24,8 +24,9 @@ def menu_principal():
             print("\n--- Tokens ---")
             for token in lexer:
                 print(token)
-                if token.type == 'IDENTIFICADOR':
-                    agregar_a_tabla(token.value, "Variable")
+                # areglar que guarde conforme a los tokens
+                agregar_a_tabla(token.value, "Variable")
+
         elif opcion == '3':
             print("\n--- Árbol Sintáctico ---")
             resultado = parser.parse(entrada)
@@ -34,6 +35,9 @@ def menu_principal():
             print("\n--- Tabla de Símbolos ---")
             for simbolo, datos in tabla_simbolos.items():
                 print(f"{simbolo}: {datos}")
+            # dot = dibujar_arbol(resultado)
+            # dot.render("arbol_sintactico", format="png", view=True)
+
         elif opcion == '5':
             print("¡Adiós!")
             break
