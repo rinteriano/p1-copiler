@@ -3,6 +3,7 @@ from lexico import tokens
 
 # Precedencia de operadores
 precedence = (
+    ('left', 'LT', 'GT'),  # Comparaciones
     ('left', 'PLUS', 'MINUS'),
     ('left', 'TIMES', 'DIVIDE')
 )
@@ -16,7 +17,6 @@ def p_statement_for(p):
 def p_statement_while(p):
     'statement : WHILE LPAREN expression RPAREN statement'
     p[0] = ('while', p[3], p[5])  # Condición y cuerpo
-
 
 def p_statements(p):
     '''statements : statements statement
@@ -46,6 +46,11 @@ def p_expression_binop(p):
     '''expression : expression PLUS term
                   | expression MINUS term'''
     p[0] = (p[2], p[1], p[3])
+
+def p_expression_comparison(p):
+    '''expression : expression LT expression
+                  | expression GT expression'''
+    p[0] = (p[2], p[1], p[3])  # Representación de comparación
 
 def p_expression_term(p):
     'expression : term'
