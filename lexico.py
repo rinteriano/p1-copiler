@@ -1,34 +1,25 @@
-# lexico.py
-
 import ply.lex as lex
-import ply.ctokens
 
 words_reserved = {
     'if': 'IF',
     'else': 'ELSE',
     'for': 'FOR',
     'while': 'WHILE',
+    'int': 'INT',
+    'float': 'FLOAT',
+    'string': 'STRING'
 }
 
 # Lista de tokens
 tokens = [
     'ID',
-    'NUMBER',
-    'LPAREN',  # Paréntesis de apertura
-    'RPAREN',  # Paréntesis de cierre
-    'PLUS',
-    'MINUS',
-    'DIVIDE',
-    'TIMES',
-    'LBRACE',  # Llave de apertura {
-    'RBRACE',  # Llave de cierre }
-    'LBRACKET',  # Corchete de apertura [
-    'RBRACKET',  # Corchete de cierre ]
-    'EQUALS',
-    'SEMICOLON',
-    'LT',  # Menor que (<)
-    'GT',  # Mayor que (>)
-    'COMMA',  # Para las listas
+    'STRING_LITERAL',
+    'LPAREN', 'RPAREN',
+    'PLUS', 'MINUS', 'DIVIDE', 'TIMES',
+    'LBRACE', 'RBRACE',
+    'LBRACKET', 'RBRACKET',
+    'EQUALS', 'SEMICOLON',
+    'LT', 'GT', 'COMMA'
 ] + list(words_reserved.values())
 
 # Reglas para los tokens
@@ -46,21 +37,33 @@ t_EQUALS = r'='
 t_SEMICOLON = r';'
 t_LT = r'<'
 t_GT = r'>'
-t_COMMA = r','  # Para las listas
+t_COMMA = r','
 
-# Reglas para identificadores y números
-def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z_0-9_]*'
-    t.type = words_reserved.get(t.value, 'ID')  # Palabras reservadas
+# Reglas para números
+def t_FLOAT(t):
+    r'\d+\.\d+'
+    t.value = float(t.value)
     return t
 
-def t_NUMBER(t):
+def t_INT(t):
     r'\d+'
     t.value = int(t.value)
     return t
 
+# Regla para strings (cadenas de texto)
+def t_STRING_LITERAL(t):
+    r'\"([^\\\n]|(\\.))*?\"'
+    t.value = t.value[1:-1]  # Elimina las comillas del string
+    return t
+
+# Regla para identificadores y palabras reservadas
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    t.type = words_reserved.get(t.value, 'ID')  # Palabras reservadas
+    return t
+
 # Ignorar espacios y tabulaciones
-t_ignore = ' \t|\n'
+t_ignore = ' \t\n'
 
 # Manejo de errores
 def t_error(t):

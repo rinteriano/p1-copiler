@@ -11,6 +11,29 @@ precedence = (
 )
 
 # Reglas de gramática
+def p_statement_declaration(p):
+    '''statement : INT ID SEMICOLON
+                 | FLOAT ID SEMICOLON
+                 | STRING ID SEMICOLON'''
+    p[0] = ('declare', p[1], p[2])  # Ejemplo: ('declare', 'int', 'x')
+
+def p_statement_assignment(p):
+    '''statement : INT ID EQUALS expression SEMICOLON
+                 | FLOAT ID EQUALS expression SEMICOLON
+                 | STRING ID EQUALS STRING_LITERAL SEMICOLON'''
+    p[0] = ('declare_assign', p[1], p[2], p[4])  # Ejemplo: ('declare_assign', 'double', 'y', 3.14)
+
+def p_factor_num(p):
+    '''factor : INT
+              | FLOAT'''
+    p[0] = p[1]  # Soporta enteros y flotantes
+
+def p_factor_string(p):
+    'factor : STRING'
+    p[0] = p[1]  # Soporta strings
+
+
+
 
 def p_statement_for(p):
     'statement : FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement'
@@ -65,10 +88,6 @@ def p_term_binop(p):
 
 def p_term_factor(p):
     'term : factor'
-    p[0] = p[1]
-
-def p_factor_num(p):
-    'factor : NUMBER'
     p[0] = p[1]
 
 def p_factor_id(p):

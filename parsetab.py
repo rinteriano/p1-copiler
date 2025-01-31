@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftLTGTleftPLUSMINUSleftTIMESDIVIDECOMMA DIVIDE ELSE EQUALS FOR GT ID IF LBRACE LBRACKET LPAREN LT MINUS NUMBER PLUS RBRACE RBRACKET RPAREN SEMICOLON TIMES WHILEstatement : FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statementstatement : WHILE LPAREN expression RPAREN statementstatements : statements statement\n                  | statementstatement : LBRACE statements RBRACEstatement : IF LPAREN expression RPAREN statement\n                 | IF LPAREN expression RPAREN statement ELSE statementstatement : expression SEMICOLONexpression : expression PLUS term\n                  | expression MINUS termexpression : expression LT expression\n                  | expression GT expressionexpression : termterm : term TIMES factor\n            | term DIVIDE factorterm : factorfactor : NUMBERfactor : IDfactor : LPAREN expression RPARENexpression : ID EQUALS expressionexpression : LBRACKET elements RBRACKETelements : elements COMMA expressionelements : expressionelements : '
+_lr_signature = 'leftLTGTleftPLUSMINUSleftTIMESDIVIDECOMMA DIVIDE ELSE EQUALS FLOAT FOR GT ID IF INT LBRACE LBRACKET LPAREN LT MINUS PLUS RBRACE RBRACKET RPAREN SEMICOLON STRING STRING_LITERAL TIMES WHILEstatement : INT ID SEMICOLON\n                 | FLOAT ID SEMICOLON\n                 | STRING ID SEMICOLONstatement : INT ID EQUALS expression SEMICOLON\n                 | FLOAT ID EQUALS expression SEMICOLON\n                 | STRING ID EQUALS STRING_LITERAL SEMICOLONfactor : INT\n              | FLOATfactor : STRINGstatement : FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statementstatement : WHILE LPAREN expression RPAREN statementstatements : statements statement\n                  | statementstatement : LBRACE statements RBRACEstatement : IF LPAREN expression RPAREN statement\n                 | IF LPAREN expression RPAREN statement ELSE statementstatement : expression SEMICOLONexpression : expression PLUS term\n                  | expression MINUS termexpression : expression LT expression\n                  | expression GT expressionexpression : termterm : term TIMES factor\n            | term DIVIDE factorterm : factorfactor : IDfactor : LPAREN expression RPARENexpression : ID EQUALS expressionexpression : LBRACKET elements RBRACKETelements : elements COMMA expressionelements : expressionelements : '
     
-_lr_action_items = {'FOR':([0,6,15,21,22,37,38,46,47,50,51,53,55,56,57,],[2,2,-8,2,-4,-5,-3,2,2,-2,-6,2,-7,2,-1,]),'WHILE':([0,6,15,21,22,37,38,46,47,50,51,53,55,56,57,],[5,5,-8,5,-4,-5,-3,5,5,-2,-6,5,-7,5,-1,]),'LBRACE':([0,6,15,21,22,37,38,46,47,50,51,53,55,56,57,],[6,6,-8,6,-4,-5,-3,6,6,-2,-6,6,-7,6,-1,]),'IF':([0,6,15,21,22,37,38,46,47,50,51,53,55,56,57,],[7,7,-8,7,-4,-5,-3,7,7,-2,-6,7,-7,7,-1,]),'ID':([0,3,6,10,13,15,16,17,18,19,20,21,22,23,24,25,26,37,38,44,45,46,47,50,51,52,53,55,56,57,],[9,9,9,9,9,-8,32,32,9,9,9,9,-4,9,32,32,9,-5,-3,9,9,9,9,-2,-6,9,9,-7,9,-1,]),'LBRACKET':([0,3,6,10,13,15,18,19,20,21,22,23,26,37,38,44,45,46,47,50,51,52,53,55,56,57,],[10,10,10,10,10,-8,10,10,10,10,-4,10,10,-5,-3,10,10,10,10,-2,-6,10,10,-7,10,-1,]),'NUMBER':([0,3,6,10,13,15,16,17,18,19,20,21,22,23,24,25,26,37,38,44,45,46,47,50,51,52,53,55,56,57,],[12,12,12,12,12,-8,12,12,12,12,12,12,-4,12,12,12,12,-5,-3,12,12,12,12,-2,-6,12,12,-7,12,-1,]),'LPAREN':([0,2,3,5,6,7,10,13,15,16,17,18,19,20,21,22,23,24,25,26,37,38,44,45,46,47,50,51,52,53,55,56,57,],[3,13,3,20,3,23,3,3,-8,3,3,3,3,3,3,-4,3,3,3,3,-5,-3,3,3,3,3,-2,-6,3,3,-7,3,-1,]),'$end':([1,15,37,50,51,55,57,],[0,-8,-5,-2,-6,-7,-1,]),'SEMICOLON':([4,8,9,11,12,29,30,31,32,33,34,35,40,41,42,43,49,],[15,-13,-18,-16,-17,45,-19,-9,-18,-10,-11,-12,-14,-15,-20,-21,52,]),'PLUS':([4,8,9,11,12,14,28,29,30,31,32,33,34,35,36,39,40,41,42,43,48,49,54,],[16,-13,-18,-16,-17,16,16,16,-19,-9,-18,-10,16,16,16,16,-14,-15,16,-21,16,16,16,]),'MINUS':([4,8,9,11,12,14,28,29,30,31,32,33,34,35,36,39,40,41,42,43,48,49,54,],[17,-13,-18,-16,-17,17,17,17,-19,-9,-18,-10,17,17,17,17,-14,-15,17,-21,17,17,17,]),'LT':([4,8,9,11,12,14,28,29,30,31,32,33,34,35,36,39,40,41,42,43,48,49,54,],[18,-13,-18,-16,-17,18,18,18,-19,-9,-18,-10,-11,-12,18,18,-14,-15,18,-21,18,18,18,]),'GT':([4,8,9,11,12,14,28,29,30,31,32,33,34,35,36,39,40,41,42,43,48,49,54,],[19,-13,-18,-16,-17,19,19,19,-19,-9,-18,-10,-11,-12,19,19,-14,-15,19,-21,19,19,19,]),'RPAREN':([8,9,11,12,14,30,31,32,33,34,35,36,39,40,41,42,43,54,],[-13,-18,-16,-17,30,-19,-9,-18,-10,-11,-12,46,47,-14,-15,-20,-21,56,]),'RBRACKET':([8,9,10,11,12,27,28,30,31,32,33,34,35,40,41,42,43,48,],[-13,-18,-24,-16,-17,43,-23,-19,-9,-18,-10,-11,-12,-14,-15,-20,-21,-22,]),'COMMA':([8,9,10,11,12,27,28,30,31,32,33,34,35,40,41,42,43,48,],[-13,-18,-24,-16,-17,44,-23,-19,-9,-18,-10,-11,-12,-14,-15,-20,-21,-22,]),'TIMES':([8,9,11,12,30,31,32,33,40,41,],[24,-18,-16,-17,-19,24,-18,24,-14,-15,]),'DIVIDE':([8,9,11,12,30,31,32,33,40,41,],[25,-18,-16,-17,-19,25,-18,25,-14,-15,]),'EQUALS':([9,],[26,]),'RBRACE':([15,21,22,37,38,50,51,55,57,],[-8,37,-4,-5,-3,-2,-6,-7,-1,]),'ELSE':([15,37,50,51,55,57,],[-8,-5,-2,53,-7,-1,]),}
+_lr_action_items = {'INT':([0,8,10,13,16,19,20,21,22,23,24,29,30,31,32,33,34,37,38,40,41,42,52,53,58,62,63,64,66,67,68,70,71,72,73,75,76,77,],[2,26,2,26,26,-17,26,26,26,26,26,26,2,-13,26,26,26,-1,26,-2,26,-3,-14,-12,26,26,2,2,-4,-5,-6,-11,-15,26,2,-16,2,-10,]),'FLOAT':([0,8,10,13,16,19,20,21,22,23,24,29,30,31,32,33,34,37,38,40,41,42,52,53,58,62,63,64,66,67,68,70,71,72,73,75,76,77,],[4,27,4,27,27,-17,27,27,27,27,27,27,4,-13,27,27,27,-1,27,-2,27,-3,-14,-12,27,27,4,4,-4,-5,-6,-11,-15,27,4,-16,4,-10,]),'STRING':([0,8,10,13,16,19,20,21,22,23,24,29,30,31,32,33,34,37,38,40,41,42,52,53,58,62,63,64,66,67,68,70,71,72,73,75,76,77,],[5,28,5,28,28,-17,28,28,28,28,28,28,5,-13,28,28,28,-1,28,-2,28,-3,-14,-12,28,28,5,5,-4,-5,-6,-11,-15,28,5,-16,5,-10,]),'FOR':([0,10,19,30,31,37,40,42,52,53,63,64,66,67,68,70,71,73,75,76,77,],[7,7,-17,7,-13,-1,-2,-3,-14,-12,7,7,-4,-5,-6,-11,-15,7,-16,7,-10,]),'WHILE':([0,10,19,30,31,37,40,42,52,53,63,64,66,67,68,70,71,73,75,76,77,],[9,9,-17,9,-13,-1,-2,-3,-14,-12,9,9,-4,-5,-6,-11,-15,9,-16,9,-10,]),'LBRACE':([0,10,19,30,31,37,40,42,52,53,63,64,66,67,68,70,71,73,75,76,77,],[10,10,-17,10,-13,-1,-2,-3,-14,-12,10,10,-4,-5,-6,-11,-15,10,-16,10,-10,]),'IF':([0,10,19,30,31,37,40,42,52,53,63,64,66,67,68,70,71,73,75,76,77,],[11,11,-17,11,-13,-1,-2,-3,-14,-12,11,11,-4,-5,-6,-11,-15,11,-16,11,-10,]),'ID':([0,2,4,5,8,10,13,16,19,20,21,22,23,24,29,30,31,32,33,34,37,38,40,41,42,52,53,58,62,63,64,66,67,68,70,71,72,73,75,76,77,],[3,15,17,18,3,3,3,3,-17,45,45,3,3,3,3,3,-13,3,45,45,-1,3,-2,3,-3,-14,-12,3,3,3,3,-4,-5,-6,-11,-15,3,3,-16,3,-10,]),'LBRACKET':([0,8,10,13,16,19,22,23,24,29,30,31,32,37,38,40,41,42,52,53,58,62,63,64,66,67,68,70,71,72,73,75,76,77,],[13,13,13,13,13,-17,13,13,13,13,13,-13,13,-1,13,-2,13,-3,-14,-12,13,13,13,13,-4,-5,-6,-11,-15,13,13,-16,13,-10,]),'LPAREN':([0,7,8,9,10,11,13,16,19,20,21,22,23,24,29,30,31,32,33,34,37,38,40,41,42,52,53,58,62,63,64,66,67,68,70,71,72,73,75,76,77,],[8,24,8,29,8,32,8,8,-17,8,8,8,8,8,8,8,-13,8,8,8,-1,8,-2,8,-3,-14,-12,8,8,8,8,-4,-5,-6,-11,-15,8,8,-16,8,-10,]),'$end':([1,19,37,40,42,52,66,67,68,70,71,75,77,],[0,-17,-1,-2,-3,-14,-4,-5,-6,-11,-15,-16,-10,]),'TIMES':([2,3,4,5,12,14,26,27,28,44,45,46,50,55,56,],[-7,-26,-8,-9,33,-25,-7,-8,-9,33,-26,33,-27,-23,-24,]),'DIVIDE':([2,3,4,5,12,14,26,27,28,44,45,46,50,55,56,],[-7,-26,-8,-9,34,-25,-7,-8,-9,34,-26,34,-27,-23,-24,]),'SEMICOLON':([2,3,4,5,6,12,14,15,17,18,26,27,28,39,44,45,46,47,48,49,50,55,56,57,59,60,61,69,],[-7,-26,-8,-9,19,-22,-25,37,40,42,-7,-8,-9,-28,-18,-26,-19,-20,-21,62,-27,-23,-24,-29,66,67,68,72,]),'PLUS':([2,3,4,5,6,12,14,25,26,27,28,36,39,44,45,46,47,48,49,50,51,54,55,56,57,59,60,65,69,74,],[-7,-26,-8,-9,20,-22,-25,20,-7,-8,-9,20,20,-18,-26,-19,20,20,20,-27,20,20,-23,-24,-29,20,20,20,20,20,]),'MINUS':([2,3,4,5,6,12,14,25,26,27,28,36,39,44,45,46,47,48,49,50,51,54,55,56,57,59,60,65,69,74,],[-7,-26,-8,-9,21,-22,-25,21,-7,-8,-9,21,21,-18,-26,-19,21,21,21,-27,21,21,-23,-24,-29,21,21,21,21,21,]),'LT':([2,3,4,5,6,12,14,25,26,27,28,36,39,44,45,46,47,48,49,50,51,54,55,56,57,59,60,65,69,74,],[-7,-26,-8,-9,22,-22,-25,22,-7,-8,-9,22,22,-18,-26,-19,-20,-21,22,-27,22,22,-23,-24,-29,22,22,22,22,22,]),'GT':([2,3,4,5,6,12,14,25,26,27,28,36,39,44,45,46,47,48,49,50,51,54,55,56,57,59,60,65,69,74,],[-7,-26,-8,-9,23,-22,-25,23,-7,-8,-9,23,23,-18,-26,-19,-20,-21,23,-27,23,23,-23,-24,-29,23,23,23,23,23,]),'EQUALS':([3,15,17,18,],[16,38,41,43,]),'RPAREN':([3,12,14,25,26,27,28,39,44,45,46,47,48,50,51,54,55,56,57,74,],[-26,-22,-25,50,-7,-8,-9,-28,-18,-26,-19,-20,-21,-27,63,64,-23,-24,-29,76,]),'RBRACKET':([3,12,13,14,26,27,28,35,36,39,44,45,46,47,48,50,55,56,57,65,],[-26,-22,-32,-25,-7,-8,-9,57,-31,-28,-18,-26,-19,-20,-21,-27,-23,-24,-29,-30,]),'COMMA':([3,12,13,14,26,27,28,35,36,39,44,45,46,47,48,50,55,56,57,65,],[-26,-22,-32,-25,-7,-8,-9,58,-31,-28,-18,-26,-19,-20,-21,-27,-23,-24,-29,-30,]),'RBRACE':([19,30,31,37,40,42,52,53,66,67,68,70,71,75,77,],[-17,52,-13,-1,-2,-3,-14,-12,-4,-5,-6,-11,-15,-16,-10,]),'ELSE':([19,37,40,42,52,66,67,68,70,71,75,77,],[-17,-1,-2,-3,-14,-4,-5,-6,-11,73,-16,-10,]),'STRING_LITERAL':([43,],[61,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'statement':([0,6,21,46,47,53,56,],[1,22,38,50,51,55,57,]),'expression':([0,3,6,10,13,18,19,20,21,23,26,44,45,46,47,52,53,56,],[4,14,4,28,29,34,35,36,4,39,42,48,49,4,4,54,4,4,]),'term':([0,3,6,10,13,16,17,18,19,20,21,23,26,44,45,46,47,52,53,56,],[8,8,8,8,8,31,33,8,8,8,8,8,8,8,8,8,8,8,8,8,]),'factor':([0,3,6,10,13,16,17,18,19,20,21,23,24,25,26,44,45,46,47,52,53,56,],[11,11,11,11,11,11,11,11,11,11,11,11,40,41,11,11,11,11,11,11,11,11,]),'statements':([6,],[21,]),'elements':([10,],[27,]),}
+_lr_goto_items = {'statement':([0,10,30,63,64,73,76,],[1,31,53,70,71,75,77,]),'expression':([0,8,10,13,16,22,23,24,29,30,32,38,41,58,62,63,64,72,73,76,],[6,25,6,36,39,47,48,49,51,6,54,59,60,65,69,6,6,74,6,6,]),'term':([0,8,10,13,16,20,21,22,23,24,29,30,32,38,41,58,62,63,64,72,73,76,],[12,12,12,12,12,44,46,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,]),'factor':([0,8,10,13,16,20,21,22,23,24,29,30,32,33,34,38,41,58,62,63,64,72,73,76,],[14,14,14,14,14,14,14,14,14,14,14,14,14,55,56,14,14,14,14,14,14,14,14,14,]),'statements':([10,],[30,]),'elements':([13,],[35,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,28 +27,36 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> statement","S'",1,None,None,None),
-  ('statement -> FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement','statement',9,'p_statement_for','sintactico.py',16),
-  ('statement -> WHILE LPAREN expression RPAREN statement','statement',5,'p_statement_while','sintactico.py',20),
-  ('statements -> statements statement','statements',2,'p_statements','sintactico.py',24),
-  ('statements -> statement','statements',1,'p_statements','sintactico.py',25),
-  ('statement -> LBRACE statements RBRACE','statement',3,'p_statement_block','sintactico.py',32),
-  ('statement -> IF LPAREN expression RPAREN statement','statement',5,'p_statement_if','sintactico.py',36),
-  ('statement -> IF LPAREN expression RPAREN statement ELSE statement','statement',7,'p_statement_if','sintactico.py',37),
-  ('statement -> expression SEMICOLON','statement',2,'p_statement_expression','sintactico.py',44),
-  ('expression -> expression PLUS term','expression',3,'p_expression_binop','sintactico.py',48),
-  ('expression -> expression MINUS term','expression',3,'p_expression_binop','sintactico.py',49),
-  ('expression -> expression LT expression','expression',3,'p_expression_comparison','sintactico.py',53),
-  ('expression -> expression GT expression','expression',3,'p_expression_comparison','sintactico.py',54),
-  ('expression -> term','expression',1,'p_expression_term','sintactico.py',58),
-  ('term -> term TIMES factor','term',3,'p_term_binop','sintactico.py',62),
-  ('term -> term DIVIDE factor','term',3,'p_term_binop','sintactico.py',63),
-  ('term -> factor','term',1,'p_term_factor','sintactico.py',67),
-  ('factor -> NUMBER','factor',1,'p_factor_num','sintactico.py',71),
-  ('factor -> ID','factor',1,'p_factor_id','sintactico.py',75),
-  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor_expr','sintactico.py',79),
-  ('expression -> ID EQUALS expression','expression',3,'p_expression_equals','sintactico.py',83),
-  ('expression -> LBRACKET elements RBRACKET','expression',3,'p_expression_list','sintactico.py',88),
-  ('elements -> elements COMMA expression','elements',3,'p_elements_multiple','sintactico.py',93),
-  ('elements -> expression','elements',1,'p_elements_single','sintactico.py',98),
-  ('elements -> <empty>','elements',0,'p_elements_empty','sintactico.py',103),
+  ('statement -> INT ID SEMICOLON','statement',3,'p_statement_declaration','sintactico.py',15),
+  ('statement -> FLOAT ID SEMICOLON','statement',3,'p_statement_declaration','sintactico.py',16),
+  ('statement -> STRING ID SEMICOLON','statement',3,'p_statement_declaration','sintactico.py',17),
+  ('statement -> INT ID EQUALS expression SEMICOLON','statement',5,'p_statement_assignment','sintactico.py',21),
+  ('statement -> FLOAT ID EQUALS expression SEMICOLON','statement',5,'p_statement_assignment','sintactico.py',22),
+  ('statement -> STRING ID EQUALS STRING_LITERAL SEMICOLON','statement',5,'p_statement_assignment','sintactico.py',23),
+  ('factor -> INT','factor',1,'p_factor_num','sintactico.py',27),
+  ('factor -> FLOAT','factor',1,'p_factor_num','sintactico.py',28),
+  ('factor -> STRING','factor',1,'p_factor_string','sintactico.py',32),
+  ('statement -> FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement','statement',9,'p_statement_for','sintactico.py',39),
+  ('statement -> WHILE LPAREN expression RPAREN statement','statement',5,'p_statement_while','sintactico.py',43),
+  ('statements -> statements statement','statements',2,'p_statements','sintactico.py',47),
+  ('statements -> statement','statements',1,'p_statements','sintactico.py',48),
+  ('statement -> LBRACE statements RBRACE','statement',3,'p_statement_block','sintactico.py',55),
+  ('statement -> IF LPAREN expression RPAREN statement','statement',5,'p_statement_if','sintactico.py',59),
+  ('statement -> IF LPAREN expression RPAREN statement ELSE statement','statement',7,'p_statement_if','sintactico.py',60),
+  ('statement -> expression SEMICOLON','statement',2,'p_statement_expression','sintactico.py',67),
+  ('expression -> expression PLUS term','expression',3,'p_expression_binop','sintactico.py',71),
+  ('expression -> expression MINUS term','expression',3,'p_expression_binop','sintactico.py',72),
+  ('expression -> expression LT expression','expression',3,'p_expression_comparison','sintactico.py',76),
+  ('expression -> expression GT expression','expression',3,'p_expression_comparison','sintactico.py',77),
+  ('expression -> term','expression',1,'p_expression_term','sintactico.py',81),
+  ('term -> term TIMES factor','term',3,'p_term_binop','sintactico.py',85),
+  ('term -> term DIVIDE factor','term',3,'p_term_binop','sintactico.py',86),
+  ('term -> factor','term',1,'p_term_factor','sintactico.py',90),
+  ('factor -> ID','factor',1,'p_factor_id','sintactico.py',94),
+  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor_expr','sintactico.py',98),
+  ('expression -> ID EQUALS expression','expression',3,'p_expression_equals','sintactico.py',102),
+  ('expression -> LBRACKET elements RBRACKET','expression',3,'p_expression_list','sintactico.py',107),
+  ('elements -> elements COMMA expression','elements',3,'p_elements_multiple','sintactico.py',111),
+  ('elements -> expression','elements',1,'p_elements_single','sintactico.py',115),
+  ('elements -> <empty>','elements',0,'p_elements_empty','sintactico.py',119),
 ]
