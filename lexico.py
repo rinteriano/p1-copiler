@@ -60,7 +60,7 @@ def t_NUMBER(t):
     return t
 
 # Ignorar espacios y tabulaciones
-t_ignore = ' \t'
+t_ignore = ' \t|\n'
 
 # Manejo de errores
 def t_error(t):
