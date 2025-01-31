@@ -1,5 +1,3 @@
-# sintactico.py
-
 import ply.yacc as yacc
 from lexico import tokens
 
@@ -11,14 +9,21 @@ precedence = (
 )
 
 # Reglas de gramática
+def p_statement_declaration(p):
+    'statement : INT ID SEMICOLON'
+    p[0] = ('declare', 'int', p[2])
+
+def p_statement_assignment(p):
+    'statement : INT ID EQUALS expression SEMICOLON'
+    p[0] = ('declare_assign', 'int', p[2], p[4])
 
 def p_statement_for(p):
     'statement : FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement'
-    p[0] = ('for', p[3], p[5], p[7], p[9])  # Inicialización, condición, incremento, cuerpo
+    p[0] = ('for', p[3], p[5], p[7], p[9])
 
 def p_statement_while(p):
     'statement : WHILE LPAREN expression RPAREN statement'
-    p[0] = ('while', p[3], p[5])  # Condición y cuerpo
+    p[0] = ('while', p[3], p[5])
 
 def p_statements(p):
     '''statements : statements statement
@@ -52,7 +57,7 @@ def p_expression_binop(p):
 def p_expression_comparison(p):
     '''expression : expression LT expression
                   | expression GT expression'''
-    p[0] = (p[2], p[1], p[3])  # Representación de comparación
+    p[0] = (p[2], p[1], p[3])
 
 def p_expression_term(p):
     'expression : term'
@@ -83,7 +88,8 @@ def p_expression_equals(p):
     'expression : ID EQUALS expression'
     p[0] = ('=', p[1], p[3])
 
-
+<<<<<<< Updated upstream
+=======
 def p_expression_list(p):
     'expression : LBRACKET elements RBRACKET'
     p[0] = ('list', p[2])
@@ -100,9 +106,10 @@ def p_elements_empty(p):
     'elements : '
     p[0] = []  # Devuelve una lista vacía
 
-
+>>>>>>> Stashed changes
 def p_error(p):
     print("Error sintáctico en '%s'" % p.value if p else "Error en entrada")
 
 # Construir el analizador sintáctico
 parser = yacc.yacc()
+

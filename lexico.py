@@ -1,13 +1,12 @@
-# lexico.py
-
 import ply.lex as lex
-import ply.ctokens
 
+# Palabras reservadas
 words_reserved = {
     'if': 'IF',
     'else': 'ELSE',
     'for': 'FOR',
     'while': 'WHILE',
+    'int': 'INT',  # Nuevo tipo de dato
 }
 
 # Lista de tokens
@@ -22,13 +21,15 @@ tokens = [
     'TIMES',
     'LBRACE',  # Llave de apertura {
     'RBRACE',  # Llave de cierre }
-    'LBRACKET',  # Corchete de apertura [
-    'RBRACKET',  # Corchete de cierre ]
     'EQUALS',
     'SEMICOLON',
     'LT',  # Menor que (<)
+<<<<<<< Updated upstream
     'GT',  # Mayor que (>)
+=======
+    'GT',  # Mayor que (>))
     'COMMA',  # Para las listas
+>>>>>>> Stashed changes
 ] + list(words_reserved.values())
 
 # Reglas para los tokens
@@ -40,17 +41,14 @@ t_LBRACE = r'\{'
 t_RBRACE = r'\}'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
-t_LBRACKET = r'\['
-t_RBRACKET = r'\]'
 t_EQUALS = r'='
 t_SEMICOLON = r';'
-t_LT = r'<'
-t_GT = r'>'
-t_COMMA = r','  # Para las listas
+t_LT = r'<'  # Menor que
+t_GT = r'>'  # Mayor que
 
 # Reglas para identificadores y números
 def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z_0-9_]*'
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = words_reserved.get(t.value, 'ID')  # Palabras reservadas
     return t
 
@@ -60,7 +58,7 @@ def t_NUMBER(t):
     return t
 
 # Ignorar espacios y tabulaciones
-t_ignore = ' \t|\n'
+t_ignore = ' \t'
 
 # Manejo de errores
 def t_error(t):
