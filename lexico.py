@@ -64,7 +64,7 @@ def t_ID(t):
     return t
 
 # Ignorar espacios y tabulaciones
-t_ignore = ' \t\n'
+t_ignore = ' \t|\n'
 
 # Manejo de errores
 def t_error(t):

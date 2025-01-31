@@ -8,10 +8,18 @@ import diagram as dg
 # Diccionario para la tabla de símbolos
 tabla_simbolos = {}
 
+
 def agregar_a_tabla(token, tipo, valor=None):
+    """
+    Agrega un token a la tabla de símbolos con su tipo y valor.
+    """
     tabla_simbolos[token] = {"tipo": tipo}
 
+
 def realizar_analisis_lexico():
+    """
+    Realiza el análisis léxico del código ingresado en el editor.
+    """
     codigo = editor.get("1.0", tk.END).strip()
     lexer.input(codigo)
     resultado_tokens.delete("1.0", tk.END)
@@ -23,23 +31,34 @@ def realizar_analisis_lexico():
     for token in lexer:
         resultado_tokens.insert(tk.END, f"{token}\n")
         agregar_a_tabla(token.value, token.type)
-    # Actualizar la tabla
+    # Actualizar la tabla de símbolos
     actualizar_tabla_simbolos()
 
+
 def realizar_analisis_sintactico():
+    """
+    Realiza el análisis sintáctico del código ingresado en el editor.
+    """
     codigo = editor.get("1.0", tk.END).strip()
     resultado_arbol.delete("1.0", tk.END)
     try:
         resultado = parser.parse(codigo)
         resultado_arbol.insert(tk.END, f"--- Árbol Sintáctico ---\n{resultado}\n")
-        dot = dg.dibujar_arbol(resultado)
-        dot.render("Arbol_Sintactico", format='png', view=True)
+
+        # Dibujar el árbol con diagram.py
+        dot = dg.dibujar_arbol_completo(resultado)
+        dot.render("Arbol_Sintactico", format="png", view=True)
     except Exception as e:
         resultado_arbol.insert(tk.END, f"Error en análisis sintáctico: {e}")
 
+
 def actualizar_tabla_simbolos():
+    """
+    Actualiza la tabla de símbolos en la interfaz.
+    """
     for simbolo, datos in tabla_simbolos.items():
         tree_tabla_simbolos.insert("", "end", values=(simbolo, datos["tipo"]))
+
 
 # Crear la ventana principal
 ventana = tk.Tk()
@@ -54,9 +73,10 @@ frame_principal.pack(fill=tk.BOTH, expand=True)
 frame_izquierdo = tk.Frame(frame_principal, bg="#1e1e1e")
 frame_izquierdo.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-# Estilo del editor de código (como VS Code)
+# Etiqueta del editor
 tk.Label(frame_izquierdo, text="Editor de Código", bg="#1e1e1e", fg="#d4d4d4", font=("Consolas", 14)).pack(anchor="w")
 
+# Editor de texto
 editor = tk.Text(frame_izquierdo, height=25, width=60, bg="#1e1e1e", fg="#d4d4d4",
                  insertbackground="#d4d4d4", font=("Consolas", 12), undo=True, wrap="none")
 editor.pack(fill=tk.BOTH, expand=True)
@@ -71,11 +91,14 @@ scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
 # Botones
 frame_botones = tk.Frame(frame_izquierdo, bg="#1e1e1e")
 frame_botones.pack(fill=tk.X, pady=10)
-btn_lexico = tk.Button(frame_botones, text="Análisis Léxico", command=realizar_analisis_lexico, bg="#007acc", fg="white", font=("Consolas", 10))
+btn_lexico = tk.Button(frame_botones, text="Análisis Léxico", command=realizar_analisis_lexico, bg="#007acc",
+                       fg="white", font=("Consolas", 10))
 btn_lexico.pack(side=tk.LEFT, padx=5)
-btn_sintactico = tk.Button(frame_botones, text="Análisis Sintáctico", command=realizar_analisis_sintactico, bg="#007acc", fg="white", font=("Consolas", 10))
+btn_sintactico = tk.Button(frame_botones, text="Análisis Sintáctico", command=realizar_analisis_sintactico,
+                           bg="#007acc", fg="white", font=("Consolas", 10))
 btn_sintactico.pack(side=tk.LEFT, padx=5)
-btn_salir = tk.Button(frame_botones, text="Salir", command=ventana.quit, bg="#f14c4c", fg="white", font=("Consolas", 10))
+btn_salir = tk.Button(frame_botones, text="Salir", command=ventana.quit, bg="#f14c4c", fg="white",
+                      font=("Consolas", 10))
 btn_salir.pack(side=tk.RIGHT, padx=5)
 
 # Marco derecho (resultados y tabla de símbolos)
@@ -88,7 +111,8 @@ resultado_tokens = scrolledtext.ScrolledText(frame_derecho, height=8, bg="#25252
 resultado_tokens.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
 
 # Área de resultados (árbol sintáctico)
-tk.Label(frame_derecho, text="Resultado Árbol Sintáctico", bg="#1e1e1e", fg="#d4d4d4", font=("Consolas", 14)).pack(anchor="w")
+tk.Label(frame_derecho, text="Resultado Árbol Sintáctico", bg="#1e1e1e", fg="#d4d4d4", font=("Consolas", 14)).pack(
+    anchor="w")
 resultado_arbol = scrolledtext.ScrolledText(frame_derecho, height=8, bg="#252526", fg="#d4d4d4", font=("Consolas", 12))
 resultado_arbol.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
 
@@ -102,7 +126,8 @@ tree_tabla_simbolos.pack(fill=tk.BOTH, expand=True)
 # Estilo de tabla
 style = ttk.Style()
 style.theme_use("clam")
-style.configure("Treeview", background="#252526", foreground="#d4d4d4", fieldbackground="#252526", font=("Consolas", 12))
+style.configure("Treeview", background="#252526", foreground="#d4d4d4", fieldbackground="#252526",
+                font=("Consolas", 12))
 style.map("Treeview", background=[("selected", "#007acc")], foreground=[("selected", "white")])
 
 # Iniciar la ventana
