@@ -1,3 +1,5 @@
+# lexico.py
+
 import ply.lex as lex
 import ply.ctokens
 
@@ -20,10 +22,13 @@ tokens = [
     'TIMES',
     'LBRACE',  # Llave de apertura {
     'RBRACE',  # Llave de cierre }
+    'LBRACKET',  # Corchete de apertura [
+    'RBRACKET',  # Corchete de cierre ]
     'EQUALS',
     'SEMICOLON',
     'LT',  # Menor que (<)
     'GT',  # Mayor que (>)
+    'COMMA',  # Para las listas
 ] + list(words_reserved.values())
 
 # Reglas para los tokens
@@ -35,10 +40,13 @@ t_LBRACE = r'\{'
 t_RBRACE = r'\}'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
+t_LBRACKET = r'\['
+t_RBRACKET = r'\]'
 t_EQUALS = r'='
 t_SEMICOLON = r';'
-t_LT = r'<'  # Menor que
-t_GT = r'>'  # Mayor que
+t_LT = r'<'
+t_GT = r'>'
+t_COMMA = r','  # Para las listas
 
 # Reglas para identificadores y números
 def t_ID(t):
