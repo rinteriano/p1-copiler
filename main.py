@@ -1,13 +1,13 @@
 from lexico import lexer
 from sintactico import parser
+import diagram as dg
 
 tabla_simbolos = {}
 
 def agregar_a_tabla(token, tipo, valor=None):
-    tabla_simbolos[token] = {"tipo": tipo, "valor": valor}
+    tabla_simbolos[token] = {"tipo": tipo}
 
 def menu_principal():
-    entrada = ""
     while True:
         print("\n--- MENÚ PRINCIPAL ---")
         print("1. Ingreso de texto en el editor")
@@ -18,30 +18,28 @@ def menu_principal():
 
         opcion = input("Selecciona una opción: ")
         if opcion == '1':
-            entrada = input("Ingresa el código: ")
+            codigo = input("Ingresa el código: ")
         elif opcion == '2':
-            if entrada == "":
-                print("Por favor ingresa código primero.")
-                continue
-            lexer.input(entrada)
+            lexer.input(codigo)
             print("\n--- Tokens ---")
             for token in lexer:
                 print(token)
-                agregar_a_tabla(token.value, "Variable", token.type)
+                agregar_a_tabla(token.value, token.type)
+
         elif opcion == '3':
-            if entrada == "":
-                print("Por favor ingresa código primero.")
-                continue
             print("\n--- Árbol Sintáctico ---")
-            try:
-                resultado = parser.parse(entrada)
-                print(resultado)
-            except Exception as e:
-                print(f"Error en el análisis sintáctico: {str(e)}")
+            resultado = parser.parse(codigo)
+            print(resultado)
+
+            dot = dg.dibujar_arbol(resultado)
+
+            dot.render("Arbol Sintactico", format='png', view=True)
+
         elif opcion == '4':
             print("\n--- Tabla de Símbolos ---")
             for simbolo, datos in tabla_simbolos.items():
                 print(f"{simbolo}: {datos}")
+
         elif opcion == '5':
             print("¡Adiós!")
             break

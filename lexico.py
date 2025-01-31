@@ -1,6 +1,7 @@
 # lexico.py
 
 import ply.lex as lex
+import ply.ctokens
 
 words_reserved = {
     'if': 'IF',
