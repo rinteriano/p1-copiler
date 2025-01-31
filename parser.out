@@ -26,6 +26,7 @@ Rule 20    expression -> ID EQUALS expression
 Rule 21    expression -> LBRACKET elements RBRACKET
 Rule 22    elements -> elements COMMA expression
 Rule 23    elements -> expression
+Rule 24    elements -> <empty>
 
 Terminals, with rules where they appear
 
@@ -250,6 +251,7 @@ state 10
     (21) expression -> LBRACKET . elements RBRACKET
     (22) elements -> . elements COMMA expression
     (23) elements -> . expression
+    (24) elements -> .
     (9) expression -> . expression PLUS term
     (10) expression -> . expression MINUS term
     (11) expression -> . expression LT expression
@@ -264,6 +266,8 @@ state 10
     (18) factor -> . ID
     (19) factor -> . LPAREN expression RPAREN
 
+    RBRACKET        reduce using rule 24 (elements -> .)
+    COMMA           reduce using rule 24 (elements -> .)
     ID              shift and go to state 9
     LBRACKET        shift and go to state 10
     NUMBER          shift and go to state 12

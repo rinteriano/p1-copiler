@@ -83,7 +83,7 @@ def p_expression_equals(p):
     'expression : ID EQUALS expression'
     p[0] = ('=', p[1], p[3])
 
-# Nueva regla para listas usando corchetes
+
 def p_expression_list(p):
     'expression : LBRACKET elements RBRACKET'
     p[0] = ('list', p[2])
@@ -95,6 +95,11 @@ def p_elements_multiple(p):
 def p_elements_single(p):
     'elements : expression'
     p[0] = [p[1]]
+
+def p_elements_empty(p):
+    'elements : '
+    p[0] = []  # Devuelve una lista vacía
+
 
 def p_error(p):
     print("Error sintáctico en '%s'" % p.value if p else "Error en entrada")
