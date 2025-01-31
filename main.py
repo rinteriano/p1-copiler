@@ -1,5 +1,6 @@
 import tkinter as tk
-from tkinter import ttk, scrolledtext
+from tkinter import ttk
+from tkinter import scrolledtext
 from lexico import lexer
 from sintactico import parser
 import diagram as dg
@@ -43,51 +44,66 @@ def actualizar_tabla_simbolos():
 # Crear la ventana principal
 ventana = tk.Tk()
 ventana.title("Analizador Léxico y Sintáctico")
-ventana.geometry("900x600")
+ventana.geometry("1200x700")
 
 # Marco principal
-frame_principal = tk.Frame(ventana)
+frame_principal = tk.Frame(ventana, bg="#1e1e1e")
 frame_principal.pack(fill=tk.BOTH, expand=True)
 
-# Marco izquierdo (entrada de código)
-frame_izquierdo = tk.Frame(frame_principal)
-frame_izquierdo.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+# Marco izquierdo (editor de código)
+frame_izquierdo = tk.Frame(frame_principal, bg="#1e1e1e")
+frame_izquierdo.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-# Editor de código
-tk.Label(frame_izquierdo, text="Código a Analizar:").pack()
-editor = scrolledtext.ScrolledText(frame_izquierdo, height=20, width=50)
-editor.pack()
+# Estilo del editor de código (como VS Code)
+tk.Label(frame_izquierdo, text="Editor de Código", bg="#1e1e1e", fg="#d4d4d4", font=("Consolas", 14)).pack(anchor="w")
+
+editor = tk.Text(frame_izquierdo, height=25, width=60, bg="#1e1e1e", fg="#d4d4d4",
+                 insertbackground="#d4d4d4", font=("Consolas", 12), undo=True, wrap="none")
+editor.pack(fill=tk.BOTH, expand=True)
+
+# Scroll horizontal y vertical
+scroll_x = tk.Scrollbar(frame_izquierdo, orient="horizontal", command=editor.xview)
+scroll_y = tk.Scrollbar(frame_izquierdo, orient="vertical", command=editor.yview)
+editor.configure(xscrollcommand=scroll_x.set, yscrollcommand=scroll_y.set)
+scroll_x.pack(side=tk.BOTTOM, fill=tk.X)
+scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
 
 # Botones
-frame_botones = tk.Frame(frame_izquierdo)
-frame_botones.pack()
-btn_lexico = tk.Button(frame_botones, text="Análisis Léxico", command=realizar_analisis_lexico)
-btn_lexico.pack(side=tk.LEFT, padx=5, pady=5)
-btn_sintactico = tk.Button(frame_botones, text="Análisis Sintáctico", command=realizar_analisis_sintactico)
-btn_sintactico.pack(side=tk.LEFT, padx=5, pady=5)
-btn_salir = tk.Button(frame_botones, text="Salir", command=ventana.quit)
-btn_salir.pack(side=tk.LEFT, padx=5, pady=5)
+frame_botones = tk.Frame(frame_izquierdo, bg="#1e1e1e")
+frame_botones.pack(fill=tk.X, pady=10)
+btn_lexico = tk.Button(frame_botones, text="Análisis Léxico", command=realizar_analisis_lexico, bg="#007acc", fg="white", font=("Consolas", 10))
+btn_lexico.pack(side=tk.LEFT, padx=5)
+btn_sintactico = tk.Button(frame_botones, text="Análisis Sintáctico", command=realizar_analisis_sintactico, bg="#007acc", fg="white", font=("Consolas", 10))
+btn_sintactico.pack(side=tk.LEFT, padx=5)
+btn_salir = tk.Button(frame_botones, text="Salir", command=ventana.quit, bg="#f14c4c", fg="white", font=("Consolas", 10))
+btn_salir.pack(side=tk.RIGHT, padx=5)
 
-# Marco derecho (resultados)
-frame_derecho = tk.Frame(frame_principal)
-frame_derecho.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+# Marco derecho (resultados y tabla de símbolos)
+frame_derecho = tk.Frame(frame_principal, bg="#1e1e1e")
+frame_derecho.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
 # Área de resultados (tokens)
-tk.Label(frame_derecho, text="Resultado Tokens:").pack()
-resultado_tokens = scrolledtext.ScrolledText(frame_derecho, height=5, width=50)
-resultado_tokens.pack()
+tk.Label(frame_derecho, text="Resultado Tokens", bg="#1e1e1e", fg="#d4d4d4", font=("Consolas", 14)).pack(anchor="w")
+resultado_tokens = scrolledtext.ScrolledText(frame_derecho, height=8, bg="#252526", fg="#d4d4d4", font=("Consolas", 12))
+resultado_tokens.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
 
 # Área de resultados (árbol sintáctico)
-tk.Label(frame_derecho, text="Resultado Árbol Sintáctico:").pack()
-resultado_arbol = scrolledtext.ScrolledText(frame_derecho, height=5, width=50)
-resultado_arbol.pack()
+tk.Label(frame_derecho, text="Resultado Árbol Sintáctico", bg="#1e1e1e", fg="#d4d4d4", font=("Consolas", 14)).pack(anchor="w")
+resultado_arbol = scrolledtext.ScrolledText(frame_derecho, height=8, bg="#252526", fg="#d4d4d4", font=("Consolas", 12))
+resultado_arbol.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
 
 # Tabla de símbolos
-tk.Label(frame_derecho, text="Tabla de Símbolos:").pack()
+tk.Label(frame_derecho, text="Tabla de Símbolos", bg="#1e1e1e", fg="#d4d4d4", font=("Consolas", 14)).pack(anchor="w")
 tree_tabla_simbolos = ttk.Treeview(frame_derecho, columns=("Símbolo", "Tipo"), show="headings", height=10)
 tree_tabla_simbolos.heading("Símbolo", text="Símbolo")
 tree_tabla_simbolos.heading("Tipo", text="Tipo")
 tree_tabla_simbolos.pack(fill=tk.BOTH, expand=True)
+
+# Estilo de tabla
+style = ttk.Style()
+style.theme_use("clam")
+style.configure("Treeview", background="#252526", foreground="#d4d4d4", fieldbackground="#252526", font=("Consolas", 12))
+style.map("Treeview", background=[("selected", "#007acc")], foreground=[("selected", "white")])
 
 # Iniciar la ventana
 ventana.mainloop()
