@@ -1,3 +1,5 @@
+# sintactico.py
+
 import ply.yacc as yacc
 from lexico import tokens
 
@@ -80,6 +82,19 @@ def p_factor_expr(p):
 def p_expression_equals(p):
     'expression : ID EQUALS expression'
     p[0] = ('=', p[1], p[3])
+
+# Nueva regla para listas usando corchetes
+def p_expression_list(p):
+    'expression : LBRACKET elements RBRACKET'
+    p[0] = ('list', p[2])
+
+def p_elements_multiple(p):
+    'elements : elements COMMA expression'
+    p[0] = p[1] + [p[3]]
+
+def p_elements_single(p):
+    'elements : expression'
+    p[0] = [p[1]]
 
 def p_error(p):
     print("Error sintáctico en '%s'" % p.value if p else "Error en entrada")

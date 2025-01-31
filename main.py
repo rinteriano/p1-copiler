@@ -7,6 +7,7 @@ def agregar_a_tabla(token, tipo, valor=None):
     tabla_simbolos[token] = {"tipo": tipo, "valor": valor}
 
 def menu_principal():
+    entrada = ""
     while True:
         print("\n--- MENÚ PRINCIPAL ---")
         print("1. Ingreso de texto en el editor")
@@ -19,22 +20,28 @@ def menu_principal():
         if opcion == '1':
             entrada = input("Ingresa el código: ")
         elif opcion == '2':
+            if entrada == "":
+                print("Por favor ingresa código primero.")
+                continue
             lexer.input(entrada)
             print("\n--- Tokens ---")
             for token in lexer:
                 print(token)
-                agregar_a_tabla(token.value, "Variable")
-
+                agregar_a_tabla(token.value, "Variable", token.type)
         elif opcion == '3':
+            if entrada == "":
+                print("Por favor ingresa código primero.")
+                continue
             print("\n--- Árbol Sintáctico ---")
-            resultado = parser.parse(entrada)
-            print(resultado)
-
+            try:
+                resultado = parser.parse(entrada)
+                print(resultado)
+            except Exception as e:
+                print(f"Error en el análisis sintáctico: {str(e)}")
         elif opcion == '4':
             print("\n--- Tabla de Símbolos ---")
             for simbolo, datos in tabla_simbolos.items():
                 print(f"{simbolo}: {datos}")
-
         elif opcion == '5':
             print("¡Adiós!")
             break
