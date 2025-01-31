@@ -1,5 +1,3 @@
-# sintactico.py
-
 import ply.yacc as yacc
 from lexico import tokens
 
@@ -18,22 +16,9 @@ def p_statement_declaration(p):
     p[0] = ('declare', p[1], p[2])  # Ejemplo: ('declare', 'int', 'x')
 
 def p_statement_assignment(p):
-    '''statement : INT ID EQUALS expression SEMICOLON
-                 | FLOAT ID EQUALS expression SEMICOLON
-                 | STRING ID EQUALS STRING_LITERAL SEMICOLON'''
-    p[0] = ('declare_assign', p[1], p[2], p[4])  # Ejemplo: ('declare_assign', 'double', 'y', 3.14)
-
-def p_factor_num(p):
-    '''factor : INT
-              | FLOAT'''
-    p[0] = p[1]  # Soporta enteros y flotantes
-
-def p_factor_string(p):
-    'factor : STRING'
-    p[0] = p[1]  # Soporta strings
-
-
-
+    '''statement : ID EQUALS expression SEMICOLON
+                 | ID EQUALS STRING_LITERAL SEMICOLON'''
+    p[0] = ('assign', p[1], p[3])  # Ejemplo: ('assign', 'x', 10)
 
 def p_statement_for(p):
     'statement : FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement'
@@ -47,7 +32,7 @@ def p_statements(p):
     '''statements : statements statement
                   | statement'''
     if len(p) == 3:
-        p[0] = p[1] + [p[2]]
+        p[0] = p[1] + [p[2]]  # Acumula las declaraciones en una lista
     else:
         p[0] = [p[1]]
 
@@ -70,12 +55,12 @@ def p_statement_expression(p):
 def p_expression_binop(p):
     '''expression : expression PLUS term
                   | expression MINUS term'''
-    p[0] = (p[2], p[1], p[3])
+    p[0] = ('binary_op', p[2], p[1], p[3])
 
 def p_expression_comparison(p):
     '''expression : expression LT expression
                   | expression GT expression'''
-    p[0] = (p[2], p[1], p[3])  # Representación de comparación
+    p[0] = ('comparison', p[2], p[1], p[3])  # Representación de comparación
 
 def p_expression_term(p):
     'expression : term'
@@ -84,15 +69,24 @@ def p_expression_term(p):
 def p_term_binop(p):
     '''term : term TIMES factor
             | term DIVIDE factor'''
-    p[0] = (p[2], p[1], p[3])
+    p[0] = ('binary_op', p[2], p[1], p[3])
 
 def p_term_factor(p):
     'term : factor'
     p[0] = p[1]
 
+def p_factor_num(p):
+    '''factor : NUMBER
+              | FLOAT'''
+    p[0] = ('number', p[1])  # Soporta enteros y flotantes
+
+def p_factor_string(p):
+    'factor : STRING_LITERAL'
+    p[0] = ('string', p[1])  # Soporta strings
+
 def p_factor_id(p):
     'factor : ID'
-    p[0] = p[1]
+    p[0] = ('identifier', p[1])
 
 def p_factor_expr(p):
     'factor : LPAREN expression RPAREN'
@@ -100,8 +94,7 @@ def p_factor_expr(p):
 
 def p_expression_equals(p):
     'expression : ID EQUALS expression'
-    p[0] = ('=', p[1], p[3])
-
+    p[0] = ('assign', p[1], p[3])
 
 def p_expression_list(p):
     'expression : LBRACKET elements RBRACKET'
@@ -118,7 +111,6 @@ def p_elements_single(p):
 def p_elements_empty(p):
     'elements : '
     p[0] = []  # Devuelve una lista vacía
-
 
 def p_error(p):
     print("Error sintáctico en '%s'" % p.value if p else "Error en entrada")

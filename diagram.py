@@ -2,30 +2,28 @@ from graphviz import Digraph
 
 def dibujar_arbol(arbol, dot=None, parent=None):
     """
-    Dibuja el árbol sintáctico de manera jerárquica sin reutilizar nodos
+    Dibuja el árbol sintáctico de manera jerárquica.
     """
     if dot is None:
         dot = Digraph(format='png')
+        dot.attr(rankdir="TB")  # Dirección del árbol (de arriba hacia abajo)
 
     if isinstance(arbol, tuple):
-        # Crear un nodo único para el elemento actual
-        node = f"{parent or 'root'}_{arbol[0]}_{id(arbol)}"
-        dot.node(node, arbol[0])  # Etiqueta del nodo (arbol[0])
+        node = f"{id(arbol)}"  # Identificador único para el nodo
+        label = arbol[0]  # Primera parte de la tupla es la etiqueta
+        dot.node(node, label)  # Crear nodo con la etiqueta
+
         if parent:
             dot.edge(parent, node)  # Conectar con el nodo padre
 
-        # Dibujar los hijos recursivamente si existen
         for hijo in arbol[1:]:
             dibujar_arbol(hijo, dot, node)
     elif isinstance(arbol, list):
-        # Iterar por la lista y dibujar cada elemento
-        for index, elem in enumerate(arbol):
-            child_name = f"{parent}_list_{index}"
+        for elem in arbol:
             dibujar_arbol(elem, dot, parent)
     else:
-        # Dibujar nodos hoja
-        node = f"{parent or 'root'}_leaf_{id(arbol)}"
-        dot.node(node, str(arbol))
+        node = f"{id(arbol)}"
+        dot.node(node, str(arbol))  # Nodos hoja
         if parent:
             dot.edge(parent, node)
 
