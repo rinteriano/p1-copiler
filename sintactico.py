@@ -1,67 +1,47 @@
-# sintactico.py
-
 import ply.yacc as yacc
-from lexico import tokens
+from lexico import tokens  # Importar tokens desde el analizador léxico
 
 # Precedencia de operadores
 precedence = (
     ('left', 'LT', 'GT'),  # Comparaciones
     ('left', 'PLUS', 'MINUS'),
-    ('left', 'TIMES', 'DIVIDE')
+    ('left', 'TIMES', 'DIVIDE'),
+    ('right', 'LNOT'),  # Operador unario (!)
+    ('right', 'INCREMENT')  # Operador de incremento (++)
 )
 
 # Reglas de gramática
-
-def p_statement_for(p):
-    'statement : FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement'
-    p[0] = ('for', p[3], p[5], p[7], p[9])  # Inicialización, condición, incremento, cuerpo
-
-def p_statement_while(p):
-    'statement : WHILE LPAREN expression RPAREN statement'
-    p[0] = ('while', p[3], p[5])  # Condición y cuerpo
-
-def p_statements(p):
-    '''statements : statements statement
-                  | statement'''
-    if len(p) == 3:
-        p[0] = p[1] + [p[2]]
-    else:
-        p[0] = [p[1]]
-
-def p_statement_block(p):
-    'statement : LBRACE statements RBRACE'
-    p[0] = ('block', p[2])
-
-def p_statement_if(p):
-    '''statement : IF LPAREN expression RPAREN statement
-                 | IF LPAREN expression RPAREN statement ELSE statement'''
-    if len(p) == 6:
-        p[0] = ('if', p[3], p[5])
-    else:
-        p[0] = ('if-else', p[3], p[5], p[7])
+def p_statement_declaration(p):
+    'statement : ID EQUALS expression SEMICOLON'
+    p[0] = ('assign', p[1], p[3])
 
 def p_statement_expression(p):
     'statement : expression SEMICOLON'
     p[0] = p[1]
 
 def p_expression_binop(p):
-    '''expression : expression PLUS term
-                  | expression MINUS term'''
+    '''expression : expression PLUS expression
+                  | expression MINUS expression
+                  | expression TIMES expression
+                  | expression DIVIDE expression'''
     p[0] = (p[2], p[1], p[3])
 
 def p_expression_comparison(p):
     '''expression : expression LT expression
                   | expression GT expression'''
-    p[0] = (p[2], p[1], p[3])  # Representación de comparación
+    p[0] = (p[2], p[1], p[3])
+
+def p_expression_unary(p):
+    '''expression : LNOT expression
+                  | ID INCREMENT'''
+    if p[1] == '!':
+        p[0] = ('not', p[2])
+    else:
+        p[0] = ('increment', p[1])
 
 def p_expression_term(p):
     'expression : term'
     p[0] = p[1]
-
-def p_term_binop(p):
-    '''term : term TIMES factor
-            | term DIVIDE factor'''
-    p[0] = (p[2], p[1], p[3])
 
 def p_term_factor(p):
     'term : factor'
@@ -79,30 +59,18 @@ def p_factor_expr(p):
     'factor : LPAREN expression RPAREN'
     p[0] = p[2]
 
-def p_expression_equals(p):
-    'expression : ID EQUALS expression'
-    p[0] = ('=', p[1], p[3])
-
-
-def p_expression_list(p):
-    'expression : LBRACKET elements RBRACKET'
-    p[0] = ('list', p[2])
-
-def p_elements_multiple(p):
-    'elements : elements COMMA expression'
-    p[0] = p[1] + [p[3]]
-
-def p_elements_single(p):
-    'elements : expression'
-    p[0] = [p[1]]
-
-def p_elements_empty(p):
-    'elements : '
-    p[0] = []  # Devuelve una lista vacía
-
-
 def p_error(p):
-    print("Error sintáctico en '%s'" % p.value if p else "Error en entrada")
+    if p:
+        print(f"Error sintáctico en '{p.value}' en la posición {p.lexpos}")
+    else:
+        print("Error en entrada")
 
-# Construir el analizador sintáctico
+# Construcción del analizador sintáctico
 parser = yacc.yacc()
+
+# Prueba del parser
+if __name__ == "__main__":
+    data = "x = 5; y = x++ + !z;"
+    result = parser.parse(data)
+    print("Árbol sintáctico:", result)
+
