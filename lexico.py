@@ -1,74 +1,130 @@
-import ply.lex as lex
+import ply.yacc as yacc
+from lexico import tokens
 
-words_reserved = {
-    'if': 'IF',
-    'else': 'ELSE',
-    'for': 'FOR',
-    'while': 'WHILE',
-    'int': 'INT',
-    'float': 'FLOAT',
-    'string': 'STRING'
-}
+# Precedencia de operadores actualizada
+precedence = (
+    ('left', 'LOR'),          # Operador OR lógico
+    ('left', 'LAND'),         # Operador AND lógico
+    ('left', 'LT', 'GT'),     # Comparaciones
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'TIMES', 'DIVIDE')
+)
 
-# Lista de tokens
-tokens = [
-    'ID',
-    'NUMBER',
-    'STRING_LITERAL',
-    'LPAREN', 'RPAREN',
-    'PLUS', 'MINUS', 'DIVIDE', 'TIMES',
-    'LBRACE', 'RBRACE',
-    'LBRACKET', 'RBRACKET',
-    'EQUALS', 'SEMICOLON',
-    'LT', 'GT', 'COMMA'
-] + list(words_reserved.values())
+# Reglas de gramática
+def p_program(p):
+    '''program : statements'''
+    p[0] = ('program', p[1])
 
-# Reglas para los tokens
-t_PLUS = r'\+'
-t_MINUS = r'-'
-t_TIMES = r'\*'
-t_DIVIDE = r'/'
-t_LBRACE = r'\{'
-t_RBRACE = r'\}'
-t_LPAREN = r'\('
-t_RPAREN = r'\)'
-t_LBRACKET = r'\['
-t_RBRACKET = r'\]'
-t_EQUALS = r'='
-t_SEMICOLON = r';'
-t_LT = r'<'
-t_GT = r'>'
-t_COMMA = r','
+def p_statements(p):
+    '''statements : statements statement
+                  | statement'''
+    if len(p) == 3:
+        p[0] = p[1] + [p[2]]
+    else:
+        p[0] = [p[1]]
 
-# Reglas para números
-def t_FLOAT(t):
-    r'\d+\.\d+'
-    t.value = float(t.value)
-    return t
+def p_statement_declaration(p):
+    '''statement : INT ID SEMICOLON
+                 | FLOAT ID SEMICOLON
+                 | STRING ID SEMICOLON'''
+    p[0] = ('declaration', p[1], p[2])
 
-def t_NUMBER(t):
-    r'\d+'
-    t.value = int(t.value)
-    return t
+def p_statement_assignment(p):
+    '''statement : ID EQUALS expression SEMICOLON
+                 | ID EQUALS STRING_LITERAL SEMICOLON'''
+    p[0] = ('assignment', p[1], p[3])
 
-# Regla para strings (cadenas de texto)
-def t_STRING_LITERAL(t):
-    r'\"([^\\\n]|(\\.))*?\"'
-    t.value = t.value[1:-1]  # Elimina las comillas del string
-    return t
+def p_statement_for(p):
+    'statement : FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement'
+    p[0] = ('for', p[3], p[5], p[7], p[9])
 
-# Regla para identificadores y palabras reservadas
-def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = words_reserved.get(t.value, 'ID')  # Palabras reservadas
-    return t
+def p_statement_while(p):
+    'statement : WHILE LPAREN expression RPAREN statement'
+    p[0] = ('while', p[3], p[5])
 
-# Ignorar espacios y tabulaciones
-t_ignore = ' \t|\n'
+def p_statement_block(p):
+    'statement : LBRACE statements RBRACE'
+    p[0] = ('block', p[2])
 
-# Manejo de errores
-def t_error(t):
-    print(f"Carácter ilegal: {t.value[0]} en la posición {t.lexpos}")
+def p_statement_if(p):
+    '''statement : IF LPAREN expression RPAREN statement
+                 | IF LPAREN expression RPAREN statement ELSE statement'''
+    if len(p) == 6:
+        p[0] = ('if', p[3], p[5])
+    else:
+        p[0] = ('if-else', p[3], p[5], p[7])
+
+def p_statement_expression(p):
+    'statement : expression SEMICOLON'
+    p[0] = ('expression', p[1])
+
+def p_expression_binop(p):
+    '''expression : expression PLUS term
+                  | expression MINUS term
+                  | expression LOR term
+                  | expression LAND term'''
+    p[0] = ('operation', p[2], p[1], p[3])
+
+def p_expression_comparison(p):
+    '''expression : expression LT expression
+                  | expression GT expression'''
+    p[0] = ('comparison', p[2], p[1], p[3])
+
+def p_expression_term(p):
+    'expression : term'
+    p[0] = p[1]
+
+def p_term_binop(p):
+    '''term : term TIMES factor
+            | term DIVIDE factor'''
+    p[0] = ('operation', p[2], p[1], p[3])
+
+def p_term_factor(p):
+    'term : factor'
+    p[0] = p[1]
+
+def p_factor_num(p):
+    '''factor : NUMBER
+              | FLOAT'''
+    p[0] = ('number', p[1])
+
+def p_factor_string(p):
+    'factor : STRING_LITERAL'
+    p[0] = ('string', p[1])
+
+def p_factor_id(p):
+    'factor : ID'
+    p[0] = ('identifier', p[1])
+
+def p_factor_expr(p):
+    'factor : LPAREN expression RPAREN'
+    p[0] = p[2]
+
+def p_expression_equals(p):
+    'expression : ID EQUALS expression'
+    p[0] = ('assignment', p[1], p[3])
+
+def p_expression_list(p):
+    'expression : LBRACKET elements RBRACKET'
+    p[0] = ('list', p[2])
+
+def p_elements_multiple(p):
+    'elements : elements COMMA expression'
+    p[0] = p[1] + [p[3]]
+
+def p_elements_single(p):
+    'elements : expression'
+    p[0] = [p[1]]
+
+def p_elements_empty(p):
+    'elements : '
+    p[0] = []
+
+def p_error(p):
+    print("Error sintáctico en '%s'" % p.value if p else "Error en entrada")
+
+# Construir el analizador sintáctico
+parser = yacc.yacc()
     t.lexer.skip(1)
 
 # Construir el analizador léxico
