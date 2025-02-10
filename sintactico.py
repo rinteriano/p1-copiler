@@ -1,9 +1,11 @@
 import ply.yacc as yacc
 from lexico import tokens
 
-# Precedencia de operadores
+# Precedencia de operadores actualizada
 precedence = (
-    ('left', 'LT', 'GT'),  # Comparaciones
+    ('left', 'LOR'),          # Operador OR lógico
+    ('left', 'LAND'),         # Operador AND lógico
+    ('left', 'LT', 'GT'),     # Comparaciones
     ('left', 'PLUS', 'MINUS'),
     ('left', 'TIMES', 'DIVIDE')
 )
@@ -11,13 +13,13 @@ precedence = (
 # Reglas de gramática
 def p_program(p):
     '''program : statements'''
-    p[0] = ('program', p[1])  # Nodo raíz del programa
+    p[0] = ('program', p[1])
 
 def p_statements(p):
     '''statements : statements statement
                   | statement'''
     if len(p) == 3:
-        p[0] = p[1] + [p[2]]  # Acumula las declaraciones en una lista
+        p[0] = p[1] + [p[2]]
     else:
         p[0] = [p[1]]
 
@@ -25,20 +27,20 @@ def p_statement_declaration(p):
     '''statement : INT ID SEMICOLON
                  | FLOAT ID SEMICOLON
                  | STRING ID SEMICOLON'''
-    p[0] = ('declaration', p[1], p[2])  # Ejemplo: ('declaration', 'int', 'x')
+    p[0] = ('declaration', p[1], p[2])
 
 def p_statement_assignment(p):
     '''statement : ID EQUALS expression SEMICOLON
                  | ID EQUALS STRING_LITERAL SEMICOLON'''
-    p[0] = ('assignment', p[1], p[3])  # Ejemplo: ('assignment', 'x', 10)
+    p[0] = ('assignment', p[1], p[3])
 
 def p_statement_for(p):
     'statement : FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement'
-    p[0] = ('for', p[3], p[5], p[7], p[9])  # Inicialización, condición, incremento, cuerpo
+    p[0] = ('for', p[3], p[5], p[7], p[9])
 
 def p_statement_while(p):
     'statement : WHILE LPAREN expression RPAREN statement'
-    p[0] = ('while', p[3], p[5])  # Condición y cuerpo
+    p[0] = ('while', p[3], p[5])
 
 def p_statement_block(p):
     'statement : LBRACE statements RBRACE'
@@ -48,9 +50,9 @@ def p_statement_if(p):
     '''statement : IF LPAREN expression RPAREN statement
                  | IF LPAREN expression RPAREN statement ELSE statement'''
     if len(p) == 6:
-        p[0] = ('if', p[3], p[5])  # Nodo `if` sin `else`
+        p[0] = ('if', p[3], p[5])
     else:
-        p[0] = ('if-else', p[3], p[5], p[7])  # Nodo `if` con `else`
+        p[0] = ('if-else', p[3], p[5], p[7])
 
 def p_statement_expression(p):
     'statement : expression SEMICOLON'
@@ -58,7 +60,9 @@ def p_statement_expression(p):
 
 def p_expression_binop(p):
     '''expression : expression PLUS term
-                  | expression MINUS term'''
+                  | expression MINUS term
+                  | expression LOR term
+                  | expression LAND term'''
     p[0] = ('operation', p[2], p[1], p[3])
 
 def p_expression_comparison(p):
@@ -82,11 +86,11 @@ def p_term_factor(p):
 def p_factor_num(p):
     '''factor : NUMBER
               | FLOAT'''
-    p[0] = ('number', p[1])  # Soporta enteros y flotantes
+    p[0] = ('number', p[1])
 
 def p_factor_string(p):
     'factor : STRING_LITERAL'
-    p[0] = ('string', p[1])  # Soporta strings
+    p[0] = ('string', p[1])
 
 def p_factor_id(p):
     'factor : ID'
@@ -114,7 +118,7 @@ def p_elements_single(p):
 
 def p_elements_empty(p):
     'elements : '
-    p[0] = []  # Devuelve una lista vacía
+    p[0] = []
 
 def p_error(p):
     print("Error sintáctico en '%s'" % p.value if p else "Error en entrada")
