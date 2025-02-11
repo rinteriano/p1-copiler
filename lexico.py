@@ -21,7 +21,8 @@ tokens = [
     'LBRACKET', 'RBRACKET',
     'EQUALS', 'SEMICOLON',
     'LT', 'GT', 'COMMA',
-    'LOR', 'LAND'  # Añadidos los nuevos tokens
+    'LOR', 'LAND',  # Añadidos los nuevos tokens
+    'EQ', 'NE'
 ] + list(words_reserved.values())
 
 # Reglas para los tokens
@@ -42,6 +43,9 @@ t_GT = r'>'
 t_COMMA = r','
 t_LOR = r'\|\|'  # Nuevo token para OR lógico
 t_LAND = r'&&'   # Nuevo token para AND lógico
+t_EQ = r'=='
+t_NE = r'!='
+
 
 # Reglas para números
 def t_FLOAT(t):
@@ -67,7 +71,7 @@ def t_ID(t):
     return t
 
 # Ignorar espacios y tabulaciones
-t_ignore = ' \t|\n'
+t_ignore = ' \t\n'
 
 # Manejo de errores
 def t_error(t):

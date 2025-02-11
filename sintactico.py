@@ -7,6 +7,8 @@ precedence = (
     ('left', 'LAND'),         # Operador AND lógico
     ('left', 'LT', 'GT'),     # Comparaciones
     ('left', 'PLUS', 'MINUS'),
+    ('left', 'EQ'),
+    ('left', 'NE'),
     ('left', 'TIMES', 'DIVIDE')
 )
 
@@ -32,7 +34,7 @@ def p_statement_declaration(p):
 def p_statement_assignment(p):
     '''statement : ID EQUALS expression SEMICOLON
                  | ID EQUALS STRING_LITERAL SEMICOLON'''
-    p[0] = ('assignment', p[1], p[3])
+    p[0] = ('assignment, =', p[1], p[3])
 
 def p_statement_for(p):
     'statement : FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement'
@@ -56,13 +58,15 @@ def p_statement_if(p):
 
 def p_statement_expression(p):
     'statement : expression SEMICOLON'
-    p[0] = ('expression', p[1])
+    p[0] = ('expr', p[1])
 
 def p_expression_binop(p):
     '''expression : expression PLUS term
                   | expression MINUS term
                   | expression LOR term
-                  | expression LAND term'''
+                  | expression LAND term
+                  | expression EQ term
+                  | expression NE term'''
     p[0] = ('operation', p[2], p[1], p[3])
 
 def p_expression_comparison(p):
@@ -94,7 +98,7 @@ def p_factor_string(p):
 
 def p_factor_id(p):
     'factor : ID'
-    p[0] = ('identifier', p[1])
+    p[0] = ('id', p[1])
 
 def p_factor_expr(p):
     'factor : LPAREN expression RPAREN'
