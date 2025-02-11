@@ -1,23 +1,21 @@
 import ply.yacc as yacc
 from lexico import tokens
 
-# Precedencia de operadores actualizada
 precedence = (
-    ('left', 'LOR'),          # Operador OR lógico
-    ('left', 'LAND'),         # Operador AND lógico
-    ('left', 'LT', 'GT'),     # Comparaciones
+    ('left', 'LOR'),
+    ('left', 'LAND'),
+    ('left', 'LT', 'GT'),
     ('left', 'PLUS', 'MINUS'),
     ('left', 'TIMES', 'DIVIDE')
 )
 
-# Reglas de gramática
 def p_program(p):
     '''program : statements'''
     p[0] = ('program', p[1])
 
 def p_statements(p):
     '''statements : statements statement
-                  | statement'''
+                 | statement'''
     if len(p) == 3:
         p[0] = p[1] + [p[2]]
     else:
@@ -25,13 +23,13 @@ def p_statements(p):
 
 def p_statement_declaration(p):
     '''statement : INT ID SEMICOLON
-                 | FLOAT ID SEMICOLON
-                 | STRING ID SEMICOLON'''
+                | FLOAT ID SEMICOLON
+                | STRING ID SEMICOLON'''
     p[0] = ('declaration', p[1], p[2])
 
 def p_statement_assignment(p):
     '''statement : ID EQUALS expression SEMICOLON
-                 | ID EQUALS STRING_LITERAL SEMICOLON'''
+                | ID EQUALS STRING_LITERAL SEMICOLON'''
     p[0] = ('assignment', p[1], p[3])
 
 def p_statement_for(p):
@@ -48,7 +46,7 @@ def p_statement_block(p):
 
 def p_statement_if(p):
     '''statement : IF LPAREN expression RPAREN statement
-                 | IF LPAREN expression RPAREN statement ELSE statement'''
+                | IF LPAREN expression RPAREN statement ELSE statement'''
     if len(p) == 6:
         p[0] = ('if', p[3], p[5])
     else:
@@ -60,14 +58,14 @@ def p_statement_expression(p):
 
 def p_expression_binop(p):
     '''expression : expression PLUS term
-                  | expression MINUS term
-                  | expression LOR term
-                  | expression LAND term'''
+                 | expression MINUS term
+                 | expression LOR term
+                 | expression LAND term'''
     p[0] = ('operation', p[2], p[1], p[3])
 
 def p_expression_comparison(p):
     '''expression : expression LT expression
-                  | expression GT expression'''
+                 | expression GT expression'''
     p[0] = ('comparison', p[2], p[1], p[3])
 
 def p_expression_term(p):
@@ -123,5 +121,4 @@ def p_elements_empty(p):
 def p_error(p):
     print("Error sintáctico en '%s'" % p.value if p else "Error en entrada")
 
-# Construir el analizador sintáctico
 parser = yacc.yacc()
