@@ -22,7 +22,10 @@ tokens = [
     'EQUALS', 'SEMICOLON',
     'LT', 'GT', 'COMMA',
     'LOR', 'LAND',  # Añadidos los nuevos tokens
-    'EQ', 'NE'
+    'EQ', 'NE',
+    'DECREMENT',  # TOken de decremento --
+    'TERNARY' ,    # Token ternary ?
+    'COLON'
 ] + list(words_reserved.values())
 
 # Reglas para los tokens
@@ -45,6 +48,9 @@ t_LOR = r'\|\|'  # Nuevo token para OR lógico
 t_LAND = r'&&'   # Nuevo token para AND lógico
 t_EQ = r'=='
 t_NE = r'!='
+t_DECREMENT = r'--'
+t_TERNARY = r'\?'
+t_COLON = r':'
 
 
 # Reglas para números

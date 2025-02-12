@@ -39,10 +39,15 @@ Rule 33    expression -> LBRACKET elements RBRACKET
 Rule 34    elements -> elements COMMA expression
 Rule 35    elements -> expression
 Rule 36    elements -> <empty>
+Rule 37    expression -> ID DECREMENT
+Rule 38    statement -> ID DECREMENT SEMICOLON
+Rule 39    expression -> expression TERNARY expression COLON expression
 
 Terminals, with rules where they appear
 
+COLON                : 39
 COMMA                : 34
+DECREMENT            : 37 38
 DIVIDE               : 25
 ELSE                 : 13
 EQ                   : 19
@@ -50,7 +55,7 @@ EQUALS               : 7 8 32
 FLOAT                : 5 28
 FOR                  : 9
 GT                   : 22
-ID                   : 4 5 6 7 8 30 32
+ID                   : 4 5 6 7 8 30 32 37 38
 IF                   : 12 13
 INT                  : 4
 LAND                 : 18
@@ -66,9 +71,10 @@ PLUS                 : 15
 RBRACE               : 11
 RBRACKET             : 33
 RPAREN               : 9 10 12 13 31
-SEMICOLON            : 4 5 6 7 8 9 9 14
+SEMICOLON            : 4 5 6 7 8 9 9 14 38
 STRING               : 6
 STRING_LITERAL       : 8 29
+TERNARY              : 39
 TIMES                : 24
 WHILE                : 10
 error                : 
@@ -76,7 +82,7 @@ error                :
 Nonterminals, with rules where they appear
 
 elements             : 33 34
-expression           : 7 9 9 9 10 12 13 14 15 16 17 18 19 20 21 21 22 22 31 32 34 35
+expression           : 7 9 9 9 10 12 13 14 15 16 17 18 19 20 21 21 22 22 31 32 34 35 39 39 39
 factor               : 24 25 26
 program              : 0
 statement            : 2 3 9 10 12 13 13
@@ -102,6 +108,7 @@ state 0
     (12) statement -> . IF LPAREN expression RPAREN statement
     (13) statement -> . IF LPAREN expression RPAREN statement ELSE statement
     (14) statement -> . expression SEMICOLON
+    (38) statement -> . ID DECREMENT SEMICOLON
     (15) expression -> . expression PLUS term
     (16) expression -> . expression MINUS term
     (17) expression -> . expression LOR term
@@ -113,6 +120,8 @@ state 0
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -163,6 +172,7 @@ state 2
     (12) statement -> . IF LPAREN expression RPAREN statement
     (13) statement -> . IF LPAREN expression RPAREN statement ELSE statement
     (14) statement -> . expression SEMICOLON
+    (38) statement -> . ID DECREMENT SEMICOLON
     (15) expression -> . expression PLUS term
     (16) expression -> . expression MINUS term
     (17) expression -> . expression LOR term
@@ -174,6 +184,8 @@ state 2
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -233,10 +245,13 @@ state 5
 
     (7) statement -> ID . EQUALS expression SEMICOLON
     (8) statement -> ID . EQUALS STRING_LITERAL SEMICOLON
+    (38) statement -> ID . DECREMENT SEMICOLON
     (32) expression -> ID . EQUALS expression
+    (37) expression -> ID . DECREMENT
     (30) factor -> ID .
 
     EQUALS          shift and go to state 21
+    DECREMENT       shift and go to state 22
     TIMES           reduce using rule 30 (factor -> ID .)
     DIVIDE          reduce using rule 30 (factor -> ID .)
     SEMICOLON       reduce using rule 30 (factor -> ID .)
@@ -248,6 +263,7 @@ state 5
     NE              reduce using rule 30 (factor -> ID .)
     LT              reduce using rule 30 (factor -> ID .)
     GT              reduce using rule 30 (factor -> ID .)
+    TERNARY         reduce using rule 30 (factor -> ID .)
 
 
 state 6
@@ -255,7 +271,7 @@ state 6
     (5) statement -> FLOAT . ID SEMICOLON
     (28) factor -> FLOAT .
 
-    ID              shift and go to state 22
+    ID              shift and go to state 23
     TIMES           reduce using rule 28 (factor -> FLOAT .)
     DIVIDE          reduce using rule 28 (factor -> FLOAT .)
     SEMICOLON       reduce using rule 28 (factor -> FLOAT .)
@@ -267,13 +283,14 @@ state 6
     NE              reduce using rule 28 (factor -> FLOAT .)
     LT              reduce using rule 28 (factor -> FLOAT .)
     GT              reduce using rule 28 (factor -> FLOAT .)
+    TERNARY         reduce using rule 28 (factor -> FLOAT .)
 
 
 state 7
 
     (6) statement -> STRING . ID SEMICOLON
 
-    ID              shift and go to state 23
+    ID              shift and go to state 24
 
 
 state 8
@@ -287,16 +304,18 @@ state 8
     (20) expression -> expression . NE term
     (21) expression -> expression . LT expression
     (22) expression -> expression . GT expression
+    (39) expression -> expression . TERNARY expression COLON expression
 
-    SEMICOLON       shift and go to state 24
-    PLUS            shift and go to state 25
-    MINUS           shift and go to state 26
-    LOR             shift and go to state 27
-    LAND            shift and go to state 28
-    EQ              shift and go to state 29
-    NE              shift and go to state 30
-    LT              shift and go to state 31
-    GT              shift and go to state 32
+    SEMICOLON       shift and go to state 25
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    LOR             shift and go to state 28
+    LAND            shift and go to state 29
+    EQ              shift and go to state 30
+    NE              shift and go to state 31
+    LT              shift and go to state 32
+    GT              shift and go to state 33
+    TERNARY         shift and go to state 34
 
 
 state 9
@@ -314,16 +333,18 @@ state 9
     NE              reduce using rule 29 (factor -> STRING_LITERAL .)
     LT              reduce using rule 29 (factor -> STRING_LITERAL .)
     GT              reduce using rule 29 (factor -> STRING_LITERAL .)
+    TERNARY         reduce using rule 29 (factor -> STRING_LITERAL .)
     RPAREN          reduce using rule 29 (factor -> STRING_LITERAL .)
     RBRACKET        reduce using rule 29 (factor -> STRING_LITERAL .)
     COMMA           reduce using rule 29 (factor -> STRING_LITERAL .)
+    COLON           reduce using rule 29 (factor -> STRING_LITERAL .)
 
 
 state 10
 
     (9) statement -> FOR . LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement
 
-    LPAREN          shift and go to state 33
+    LPAREN          shift and go to state 35
 
 
 state 11
@@ -340,6 +361,8 @@ state 11
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -349,14 +372,14 @@ state 11
     (30) factor -> . ID
     (31) factor -> . LPAREN expression RPAREN
 
-    ID              shift and go to state 35
+    ID              shift and go to state 37
     LBRACKET        shift and go to state 16
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
     LPAREN          shift and go to state 11
 
-    expression                     shift and go to state 34
+    expression                     shift and go to state 36
     term                           shift and go to state 15
     factor                         shift and go to state 17
 
@@ -364,7 +387,7 @@ state 12
 
     (10) statement -> WHILE . LPAREN expression RPAREN statement
 
-    LPAREN          shift and go to state 37
+    LPAREN          shift and go to state 39
 
 
 state 13
@@ -383,6 +406,7 @@ state 13
     (12) statement -> . IF LPAREN expression RPAREN statement
     (13) statement -> . IF LPAREN expression RPAREN statement ELSE statement
     (14) statement -> . expression SEMICOLON
+    (38) statement -> . ID DECREMENT SEMICOLON
     (15) expression -> . expression PLUS term
     (16) expression -> . expression MINUS term
     (17) expression -> . expression LOR term
@@ -394,6 +418,8 @@ state 13
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -416,7 +442,7 @@ state 13
     STRING_LITERAL  shift and go to state 9
     LPAREN          shift and go to state 11
 
-    statements                     shift and go to state 38
+    statements                     shift and go to state 40
     statement                      shift and go to state 3
     expression                     shift and go to state 8
     term                           shift and go to state 15
@@ -427,7 +453,7 @@ state 14
     (12) statement -> IF . LPAREN expression RPAREN statement
     (13) statement -> IF . LPAREN expression RPAREN statement ELSE statement
 
-    LPAREN          shift and go to state 39
+    LPAREN          shift and go to state 41
 
 
 state 15
@@ -445,11 +471,13 @@ state 15
     NE              reduce using rule 23 (expression -> term .)
     LT              reduce using rule 23 (expression -> term .)
     GT              reduce using rule 23 (expression -> term .)
+    TERNARY         reduce using rule 23 (expression -> term .)
     RPAREN          reduce using rule 23 (expression -> term .)
     RBRACKET        reduce using rule 23 (expression -> term .)
     COMMA           reduce using rule 23 (expression -> term .)
-    TIMES           shift and go to state 40
-    DIVIDE          shift and go to state 41
+    COLON           reduce using rule 23 (expression -> term .)
+    TIMES           shift and go to state 42
+    DIVIDE          shift and go to state 43
 
 
 state 16
@@ -469,6 +497,8 @@ state 16
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -480,15 +510,15 @@ state 16
 
     RBRACKET        reduce using rule 36 (elements -> .)
     COMMA           reduce using rule 36 (elements -> .)
-    ID              shift and go to state 35
+    ID              shift and go to state 37
     LBRACKET        shift and go to state 16
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
     LPAREN          shift and go to state 11
 
-    elements                       shift and go to state 42
-    expression                     shift and go to state 43
+    elements                       shift and go to state 44
+    expression                     shift and go to state 45
     term                           shift and go to state 15
     factor                         shift and go to state 17
 
@@ -507,9 +537,11 @@ state 17
     NE              reduce using rule 26 (term -> factor .)
     LT              reduce using rule 26 (term -> factor .)
     GT              reduce using rule 26 (term -> factor .)
+    TERNARY         reduce using rule 26 (term -> factor .)
     RPAREN          reduce using rule 26 (term -> factor .)
     RBRACKET        reduce using rule 26 (term -> factor .)
     COMMA           reduce using rule 26 (term -> factor .)
+    COLON           reduce using rule 26 (term -> factor .)
 
 
 state 18
@@ -527,9 +559,11 @@ state 18
     NE              reduce using rule 27 (factor -> NUMBER .)
     LT              reduce using rule 27 (factor -> NUMBER .)
     GT              reduce using rule 27 (factor -> NUMBER .)
+    TERNARY         reduce using rule 27 (factor -> NUMBER .)
     RPAREN          reduce using rule 27 (factor -> NUMBER .)
     RBRACKET        reduce using rule 27 (factor -> NUMBER .)
     COMMA           reduce using rule 27 (factor -> NUMBER .)
+    COLON           reduce using rule 27 (factor -> NUMBER .)
 
 
 state 19
@@ -556,7 +590,7 @@ state 20
 
     (4) statement -> INT ID . SEMICOLON
 
-    SEMICOLON       shift and go to state 44
+    SEMICOLON       shift and go to state 46
 
 
 state 21
@@ -575,6 +609,8 @@ state 21
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -584,32 +620,51 @@ state 21
     (30) factor -> . ID
     (31) factor -> . LPAREN expression RPAREN
 
-    STRING_LITERAL  shift and go to state 46
-    ID              shift and go to state 35
+    STRING_LITERAL  shift and go to state 48
+    ID              shift and go to state 37
     LBRACKET        shift and go to state 16
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     LPAREN          shift and go to state 11
 
-    expression                     shift and go to state 45
+    expression                     shift and go to state 47
     term                           shift and go to state 15
     factor                         shift and go to state 17
 
 state 22
 
-    (5) statement -> FLOAT ID . SEMICOLON
+    (38) statement -> ID DECREMENT . SEMICOLON
+    (37) expression -> ID DECREMENT .
 
-    SEMICOLON       shift and go to state 47
+    SEMICOLON       reduce using rule 37 (expression -> ID DECREMENT .)
+    PLUS            reduce using rule 37 (expression -> ID DECREMENT .)
+    MINUS           reduce using rule 37 (expression -> ID DECREMENT .)
+    LOR             reduce using rule 37 (expression -> ID DECREMENT .)
+    LAND            reduce using rule 37 (expression -> ID DECREMENT .)
+    EQ              reduce using rule 37 (expression -> ID DECREMENT .)
+    NE              reduce using rule 37 (expression -> ID DECREMENT .)
+    LT              reduce using rule 37 (expression -> ID DECREMENT .)
+    GT              reduce using rule 37 (expression -> ID DECREMENT .)
+    TERNARY         reduce using rule 37 (expression -> ID DECREMENT .)
+
+  ! SEMICOLON       [ shift and go to state 49 ]
 
 
 state 23
 
-    (6) statement -> STRING ID . SEMICOLON
+    (5) statement -> FLOAT ID . SEMICOLON
 
-    SEMICOLON       shift and go to state 48
+    SEMICOLON       shift and go to state 50
 
 
 state 24
+
+    (6) statement -> STRING ID . SEMICOLON
+
+    SEMICOLON       shift and go to state 51
+
+
+state 25
 
     (14) statement -> expression SEMICOLON .
 
@@ -630,7 +685,7 @@ state 24
     ELSE            reduce using rule 14 (statement -> expression SEMICOLON .)
 
 
-state 25
+state 26
 
     (15) expression -> expression PLUS . term
     (24) term -> . term TIMES factor
@@ -643,15 +698,15 @@ state 25
     (31) factor -> . LPAREN expression RPAREN
 
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
-    ID              shift and go to state 50
+    ID              shift and go to state 53
     LPAREN          shift and go to state 11
 
-    term                           shift and go to state 49
+    term                           shift and go to state 52
     factor                         shift and go to state 17
 
-state 26
+state 27
 
     (16) expression -> expression MINUS . term
     (24) term -> . term TIMES factor
@@ -664,15 +719,15 @@ state 26
     (31) factor -> . LPAREN expression RPAREN
 
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
-    ID              shift and go to state 50
+    ID              shift and go to state 53
     LPAREN          shift and go to state 11
 
-    term                           shift and go to state 51
+    term                           shift and go to state 54
     factor                         shift and go to state 17
 
-state 27
+state 28
 
     (17) expression -> expression LOR . term
     (24) term -> . term TIMES factor
@@ -685,15 +740,15 @@ state 27
     (31) factor -> . LPAREN expression RPAREN
 
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
-    ID              shift and go to state 50
+    ID              shift and go to state 53
     LPAREN          shift and go to state 11
 
-    term                           shift and go to state 52
+    term                           shift and go to state 55
     factor                         shift and go to state 17
 
-state 28
+state 29
 
     (18) expression -> expression LAND . term
     (24) term -> . term TIMES factor
@@ -706,15 +761,15 @@ state 28
     (31) factor -> . LPAREN expression RPAREN
 
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
-    ID              shift and go to state 50
+    ID              shift and go to state 53
     LPAREN          shift and go to state 11
 
-    term                           shift and go to state 53
+    term                           shift and go to state 56
     factor                         shift and go to state 17
 
-state 29
+state 30
 
     (19) expression -> expression EQ . term
     (24) term -> . term TIMES factor
@@ -727,15 +782,15 @@ state 29
     (31) factor -> . LPAREN expression RPAREN
 
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
-    ID              shift and go to state 50
+    ID              shift and go to state 53
     LPAREN          shift and go to state 11
 
-    term                           shift and go to state 54
+    term                           shift and go to state 57
     factor                         shift and go to state 17
 
-state 30
+state 31
 
     (20) expression -> expression NE . term
     (24) term -> . term TIMES factor
@@ -748,15 +803,15 @@ state 30
     (31) factor -> . LPAREN expression RPAREN
 
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
-    ID              shift and go to state 50
+    ID              shift and go to state 53
     LPAREN          shift and go to state 11
 
-    term                           shift and go to state 55
+    term                           shift and go to state 58
     factor                         shift and go to state 17
 
-state 31
+state 32
 
     (21) expression -> expression LT . expression
     (15) expression -> . expression PLUS term
@@ -770,6 +825,8 @@ state 31
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -779,18 +836,18 @@ state 31
     (30) factor -> . ID
     (31) factor -> . LPAREN expression RPAREN
 
-    ID              shift and go to state 35
+    ID              shift and go to state 37
     LBRACKET        shift and go to state 16
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
     LPAREN          shift and go to state 11
 
-    expression                     shift and go to state 56
+    expression                     shift and go to state 59
     term                           shift and go to state 15
     factor                         shift and go to state 17
 
-state 32
+state 33
 
     (22) expression -> expression GT . expression
     (15) expression -> . expression PLUS term
@@ -804,6 +861,8 @@ state 32
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -813,18 +872,54 @@ state 32
     (30) factor -> . ID
     (31) factor -> . LPAREN expression RPAREN
 
-    ID              shift and go to state 35
+    ID              shift and go to state 37
     LBRACKET        shift and go to state 16
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
     LPAREN          shift and go to state 11
 
-    expression                     shift and go to state 57
+    expression                     shift and go to state 60
     term                           shift and go to state 15
     factor                         shift and go to state 17
 
-state 33
+state 34
+
+    (39) expression -> expression TERNARY . expression COLON expression
+    (15) expression -> . expression PLUS term
+    (16) expression -> . expression MINUS term
+    (17) expression -> . expression LOR term
+    (18) expression -> . expression LAND term
+    (19) expression -> . expression EQ term
+    (20) expression -> . expression NE term
+    (21) expression -> . expression LT expression
+    (22) expression -> . expression GT expression
+    (23) expression -> . term
+    (32) expression -> . ID EQUALS expression
+    (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
+    (24) term -> . term TIMES factor
+    (25) term -> . term DIVIDE factor
+    (26) term -> . factor
+    (27) factor -> . NUMBER
+    (28) factor -> . FLOAT
+    (29) factor -> . STRING_LITERAL
+    (30) factor -> . ID
+    (31) factor -> . LPAREN expression RPAREN
+
+    ID              shift and go to state 37
+    LBRACKET        shift and go to state 16
+    NUMBER          shift and go to state 18
+    FLOAT           shift and go to state 38
+    STRING_LITERAL  shift and go to state 9
+    LPAREN          shift and go to state 11
+
+    expression                     shift and go to state 61
+    term                           shift and go to state 15
+    factor                         shift and go to state 17
+
+state 35
 
     (9) statement -> FOR LPAREN . expression SEMICOLON expression SEMICOLON expression RPAREN statement
     (15) expression -> . expression PLUS term
@@ -838,6 +933,8 @@ state 33
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -847,18 +944,18 @@ state 33
     (30) factor -> . ID
     (31) factor -> . LPAREN expression RPAREN
 
-    ID              shift and go to state 35
+    ID              shift and go to state 37
     LBRACKET        shift and go to state 16
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
     LPAREN          shift and go to state 11
 
-    expression                     shift and go to state 58
+    expression                     shift and go to state 62
     term                           shift and go to state 15
     factor                         shift and go to state 17
 
-state 34
+state 36
 
     (31) factor -> LPAREN expression . RPAREN
     (15) expression -> expression . PLUS term
@@ -869,24 +966,28 @@ state 34
     (20) expression -> expression . NE term
     (21) expression -> expression . LT expression
     (22) expression -> expression . GT expression
+    (39) expression -> expression . TERNARY expression COLON expression
 
-    RPAREN          shift and go to state 59
-    PLUS            shift and go to state 25
-    MINUS           shift and go to state 26
-    LOR             shift and go to state 27
-    LAND            shift and go to state 28
-    EQ              shift and go to state 29
-    NE              shift and go to state 30
-    LT              shift and go to state 31
-    GT              shift and go to state 32
+    RPAREN          shift and go to state 63
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    LOR             shift and go to state 28
+    LAND            shift and go to state 29
+    EQ              shift and go to state 30
+    NE              shift and go to state 31
+    LT              shift and go to state 32
+    GT              shift and go to state 33
+    TERNARY         shift and go to state 34
 
 
-state 35
+state 37
 
     (32) expression -> ID . EQUALS expression
+    (37) expression -> ID . DECREMENT
     (30) factor -> ID .
 
-    EQUALS          shift and go to state 60
+    EQUALS          shift and go to state 64
+    DECREMENT       shift and go to state 65
     TIMES           reduce using rule 30 (factor -> ID .)
     DIVIDE          reduce using rule 30 (factor -> ID .)
     RPAREN          reduce using rule 30 (factor -> ID .)
@@ -898,12 +999,14 @@ state 35
     NE              reduce using rule 30 (factor -> ID .)
     LT              reduce using rule 30 (factor -> ID .)
     GT              reduce using rule 30 (factor -> ID .)
+    TERNARY         reduce using rule 30 (factor -> ID .)
     RBRACKET        reduce using rule 30 (factor -> ID .)
     COMMA           reduce using rule 30 (factor -> ID .)
     SEMICOLON       reduce using rule 30 (factor -> ID .)
+    COLON           reduce using rule 30 (factor -> ID .)
 
 
-state 36
+state 38
 
     (28) factor -> FLOAT .
 
@@ -918,12 +1021,14 @@ state 36
     NE              reduce using rule 28 (factor -> FLOAT .)
     LT              reduce using rule 28 (factor -> FLOAT .)
     GT              reduce using rule 28 (factor -> FLOAT .)
+    TERNARY         reduce using rule 28 (factor -> FLOAT .)
     RBRACKET        reduce using rule 28 (factor -> FLOAT .)
     COMMA           reduce using rule 28 (factor -> FLOAT .)
     SEMICOLON       reduce using rule 28 (factor -> FLOAT .)
+    COLON           reduce using rule 28 (factor -> FLOAT .)
 
 
-state 37
+state 39
 
     (10) statement -> WHILE LPAREN . expression RPAREN statement
     (15) expression -> . expression PLUS term
@@ -937,6 +1042,8 @@ state 37
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -946,18 +1053,18 @@ state 37
     (30) factor -> . ID
     (31) factor -> . LPAREN expression RPAREN
 
-    ID              shift and go to state 35
+    ID              shift and go to state 37
     LBRACKET        shift and go to state 16
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
     LPAREN          shift and go to state 11
 
-    expression                     shift and go to state 61
+    expression                     shift and go to state 66
     term                           shift and go to state 15
     factor                         shift and go to state 17
 
-state 38
+state 40
 
     (11) statement -> LBRACE statements . RBRACE
     (2) statements -> statements . statement
@@ -972,6 +1079,7 @@ state 38
     (12) statement -> . IF LPAREN expression RPAREN statement
     (13) statement -> . IF LPAREN expression RPAREN statement ELSE statement
     (14) statement -> . expression SEMICOLON
+    (38) statement -> . ID DECREMENT SEMICOLON
     (15) expression -> . expression PLUS term
     (16) expression -> . expression MINUS term
     (17) expression -> . expression LOR term
@@ -983,6 +1091,8 @@ state 38
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -992,7 +1102,7 @@ state 38
     (30) factor -> . ID
     (31) factor -> . LPAREN expression RPAREN
 
-    RBRACE          shift and go to state 62
+    RBRACE          shift and go to state 67
     INT             shift and go to state 4
     FLOAT           shift and go to state 6
     STRING          shift and go to state 7
@@ -1011,7 +1121,7 @@ state 38
     term                           shift and go to state 15
     factor                         shift and go to state 17
 
-state 39
+state 41
 
     (12) statement -> IF LPAREN . expression RPAREN statement
     (13) statement -> IF LPAREN . expression RPAREN statement ELSE statement
@@ -1026,6 +1136,8 @@ state 39
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -1035,18 +1147,18 @@ state 39
     (30) factor -> . ID
     (31) factor -> . LPAREN expression RPAREN
 
-    ID              shift and go to state 35
+    ID              shift and go to state 37
     LBRACKET        shift and go to state 16
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
     LPAREN          shift and go to state 11
 
-    expression                     shift and go to state 63
+    expression                     shift and go to state 68
     term                           shift and go to state 15
     factor                         shift and go to state 17
 
-state 40
+state 42
 
     (24) term -> term TIMES . factor
     (27) factor -> . NUMBER
@@ -1056,14 +1168,14 @@ state 40
     (31) factor -> . LPAREN expression RPAREN
 
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
-    ID              shift and go to state 50
+    ID              shift and go to state 53
     LPAREN          shift and go to state 11
 
-    factor                         shift and go to state 64
+    factor                         shift and go to state 69
 
-state 41
+state 43
 
     (25) term -> term DIVIDE . factor
     (27) factor -> . NUMBER
@@ -1073,23 +1185,23 @@ state 41
     (31) factor -> . LPAREN expression RPAREN
 
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
-    ID              shift and go to state 50
+    ID              shift and go to state 53
     LPAREN          shift and go to state 11
 
-    factor                         shift and go to state 65
+    factor                         shift and go to state 70
 
-state 42
+state 44
 
     (33) expression -> LBRACKET elements . RBRACKET
     (34) elements -> elements . COMMA expression
 
-    RBRACKET        shift and go to state 66
-    COMMA           shift and go to state 67
+    RBRACKET        shift and go to state 71
+    COMMA           shift and go to state 72
 
 
-state 43
+state 45
 
     (35) elements -> expression .
     (15) expression -> expression . PLUS term
@@ -1100,20 +1212,22 @@ state 43
     (20) expression -> expression . NE term
     (21) expression -> expression . LT expression
     (22) expression -> expression . GT expression
+    (39) expression -> expression . TERNARY expression COLON expression
 
     RBRACKET        reduce using rule 35 (elements -> expression .)
     COMMA           reduce using rule 35 (elements -> expression .)
-    PLUS            shift and go to state 25
-    MINUS           shift and go to state 26
-    LOR             shift and go to state 27
-    LAND            shift and go to state 28
-    EQ              shift and go to state 29
-    NE              shift and go to state 30
-    LT              shift and go to state 31
-    GT              shift and go to state 32
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    LOR             shift and go to state 28
+    LAND            shift and go to state 29
+    EQ              shift and go to state 30
+    NE              shift and go to state 31
+    LT              shift and go to state 32
+    GT              shift and go to state 33
+    TERNARY         shift and go to state 34
 
 
-state 44
+state 46
 
     (4) statement -> INT ID SEMICOLON .
 
@@ -1134,7 +1248,7 @@ state 44
     ELSE            reduce using rule 4 (statement -> INT ID SEMICOLON .)
 
 
-state 45
+state 47
 
     (7) statement -> ID EQUALS expression . SEMICOLON
     (32) expression -> ID EQUALS expression .
@@ -1146,6 +1260,7 @@ state 45
     (20) expression -> expression . NE term
     (21) expression -> expression . LT expression
     (22) expression -> expression . GT expression
+    (39) expression -> expression . TERNARY expression COLON expression
 
   ! shift/reduce conflict for SEMICOLON resolved as shift
   ! shift/reduce conflict for PLUS resolved as shift
@@ -1156,15 +1271,17 @@ state 45
   ! shift/reduce conflict for NE resolved as shift
   ! shift/reduce conflict for LT resolved as shift
   ! shift/reduce conflict for GT resolved as shift
-    SEMICOLON       shift and go to state 68
-    PLUS            shift and go to state 25
-    MINUS           shift and go to state 26
-    LOR             shift and go to state 27
-    LAND            shift and go to state 28
-    EQ              shift and go to state 29
-    NE              shift and go to state 30
-    LT              shift and go to state 31
-    GT              shift and go to state 32
+  ! shift/reduce conflict for TERNARY resolved as shift
+    SEMICOLON       shift and go to state 73
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    LOR             shift and go to state 28
+    LAND            shift and go to state 29
+    EQ              shift and go to state 30
+    NE              shift and go to state 31
+    LT              shift and go to state 32
+    GT              shift and go to state 33
+    TERNARY         shift and go to state 34
 
   ! SEMICOLON       [ reduce using rule 32 (expression -> ID EQUALS expression .) ]
   ! PLUS            [ reduce using rule 32 (expression -> ID EQUALS expression .) ]
@@ -1175,15 +1292,16 @@ state 45
   ! NE              [ reduce using rule 32 (expression -> ID EQUALS expression .) ]
   ! LT              [ reduce using rule 32 (expression -> ID EQUALS expression .) ]
   ! GT              [ reduce using rule 32 (expression -> ID EQUALS expression .) ]
+  ! TERNARY         [ reduce using rule 32 (expression -> ID EQUALS expression .) ]
 
 
-state 46
+state 48
 
     (8) statement -> ID EQUALS STRING_LITERAL . SEMICOLON
     (29) factor -> STRING_LITERAL .
 
   ! shift/reduce conflict for SEMICOLON resolved as shift
-    SEMICOLON       shift and go to state 69
+    SEMICOLON       shift and go to state 74
     TIMES           reduce using rule 29 (factor -> STRING_LITERAL .)
     DIVIDE          reduce using rule 29 (factor -> STRING_LITERAL .)
     PLUS            reduce using rule 29 (factor -> STRING_LITERAL .)
@@ -1194,11 +1312,33 @@ state 46
     NE              reduce using rule 29 (factor -> STRING_LITERAL .)
     LT              reduce using rule 29 (factor -> STRING_LITERAL .)
     GT              reduce using rule 29 (factor -> STRING_LITERAL .)
+    TERNARY         reduce using rule 29 (factor -> STRING_LITERAL .)
 
   ! SEMICOLON       [ reduce using rule 29 (factor -> STRING_LITERAL .) ]
 
 
-state 47
+state 49
+
+    (38) statement -> ID DECREMENT SEMICOLON .
+
+    INT             reduce using rule 38 (statement -> ID DECREMENT SEMICOLON .)
+    FLOAT           reduce using rule 38 (statement -> ID DECREMENT SEMICOLON .)
+    STRING          reduce using rule 38 (statement -> ID DECREMENT SEMICOLON .)
+    ID              reduce using rule 38 (statement -> ID DECREMENT SEMICOLON .)
+    FOR             reduce using rule 38 (statement -> ID DECREMENT SEMICOLON .)
+    WHILE           reduce using rule 38 (statement -> ID DECREMENT SEMICOLON .)
+    LBRACE          reduce using rule 38 (statement -> ID DECREMENT SEMICOLON .)
+    IF              reduce using rule 38 (statement -> ID DECREMENT SEMICOLON .)
+    LBRACKET        reduce using rule 38 (statement -> ID DECREMENT SEMICOLON .)
+    NUMBER          reduce using rule 38 (statement -> ID DECREMENT SEMICOLON .)
+    STRING_LITERAL  reduce using rule 38 (statement -> ID DECREMENT SEMICOLON .)
+    LPAREN          reduce using rule 38 (statement -> ID DECREMENT SEMICOLON .)
+    $end            reduce using rule 38 (statement -> ID DECREMENT SEMICOLON .)
+    RBRACE          reduce using rule 38 (statement -> ID DECREMENT SEMICOLON .)
+    ELSE            reduce using rule 38 (statement -> ID DECREMENT SEMICOLON .)
+
+
+state 50
 
     (5) statement -> FLOAT ID SEMICOLON .
 
@@ -1219,7 +1359,7 @@ state 47
     ELSE            reduce using rule 5 (statement -> FLOAT ID SEMICOLON .)
 
 
-state 48
+state 51
 
     (6) statement -> STRING ID SEMICOLON .
 
@@ -1240,7 +1380,7 @@ state 48
     ELSE            reduce using rule 6 (statement -> STRING ID SEMICOLON .)
 
 
-state 49
+state 52
 
     (15) expression -> expression PLUS term .
     (24) term -> term . TIMES factor
@@ -1255,14 +1395,16 @@ state 49
     NE              reduce using rule 15 (expression -> expression PLUS term .)
     LT              reduce using rule 15 (expression -> expression PLUS term .)
     GT              reduce using rule 15 (expression -> expression PLUS term .)
+    TERNARY         reduce using rule 15 (expression -> expression PLUS term .)
     RPAREN          reduce using rule 15 (expression -> expression PLUS term .)
     RBRACKET        reduce using rule 15 (expression -> expression PLUS term .)
     COMMA           reduce using rule 15 (expression -> expression PLUS term .)
-    TIMES           shift and go to state 40
-    DIVIDE          shift and go to state 41
+    COLON           reduce using rule 15 (expression -> expression PLUS term .)
+    TIMES           shift and go to state 42
+    DIVIDE          shift and go to state 43
 
 
-state 50
+state 53
 
     (30) factor -> ID .
 
@@ -1277,12 +1419,14 @@ state 50
     NE              reduce using rule 30 (factor -> ID .)
     LT              reduce using rule 30 (factor -> ID .)
     GT              reduce using rule 30 (factor -> ID .)
+    TERNARY         reduce using rule 30 (factor -> ID .)
     RPAREN          reduce using rule 30 (factor -> ID .)
     RBRACKET        reduce using rule 30 (factor -> ID .)
     COMMA           reduce using rule 30 (factor -> ID .)
+    COLON           reduce using rule 30 (factor -> ID .)
 
 
-state 51
+state 54
 
     (16) expression -> expression MINUS term .
     (24) term -> term . TIMES factor
@@ -1297,14 +1441,16 @@ state 51
     NE              reduce using rule 16 (expression -> expression MINUS term .)
     LT              reduce using rule 16 (expression -> expression MINUS term .)
     GT              reduce using rule 16 (expression -> expression MINUS term .)
+    TERNARY         reduce using rule 16 (expression -> expression MINUS term .)
     RPAREN          reduce using rule 16 (expression -> expression MINUS term .)
     RBRACKET        reduce using rule 16 (expression -> expression MINUS term .)
     COMMA           reduce using rule 16 (expression -> expression MINUS term .)
-    TIMES           shift and go to state 40
-    DIVIDE          shift and go to state 41
+    COLON           reduce using rule 16 (expression -> expression MINUS term .)
+    TIMES           shift and go to state 42
+    DIVIDE          shift and go to state 43
 
 
-state 52
+state 55
 
     (17) expression -> expression LOR term .
     (24) term -> term . TIMES factor
@@ -1319,14 +1465,16 @@ state 52
     NE              reduce using rule 17 (expression -> expression LOR term .)
     LT              reduce using rule 17 (expression -> expression LOR term .)
     GT              reduce using rule 17 (expression -> expression LOR term .)
+    TERNARY         reduce using rule 17 (expression -> expression LOR term .)
     RPAREN          reduce using rule 17 (expression -> expression LOR term .)
     RBRACKET        reduce using rule 17 (expression -> expression LOR term .)
     COMMA           reduce using rule 17 (expression -> expression LOR term .)
-    TIMES           shift and go to state 40
-    DIVIDE          shift and go to state 41
+    COLON           reduce using rule 17 (expression -> expression LOR term .)
+    TIMES           shift and go to state 42
+    DIVIDE          shift and go to state 43
 
 
-state 53
+state 56
 
     (18) expression -> expression LAND term .
     (24) term -> term . TIMES factor
@@ -1341,14 +1489,16 @@ state 53
     NE              reduce using rule 18 (expression -> expression LAND term .)
     LT              reduce using rule 18 (expression -> expression LAND term .)
     GT              reduce using rule 18 (expression -> expression LAND term .)
+    TERNARY         reduce using rule 18 (expression -> expression LAND term .)
     RPAREN          reduce using rule 18 (expression -> expression LAND term .)
     RBRACKET        reduce using rule 18 (expression -> expression LAND term .)
     COMMA           reduce using rule 18 (expression -> expression LAND term .)
-    TIMES           shift and go to state 40
-    DIVIDE          shift and go to state 41
+    COLON           reduce using rule 18 (expression -> expression LAND term .)
+    TIMES           shift and go to state 42
+    DIVIDE          shift and go to state 43
 
 
-state 54
+state 57
 
     (19) expression -> expression EQ term .
     (24) term -> term . TIMES factor
@@ -1363,14 +1513,16 @@ state 54
     NE              reduce using rule 19 (expression -> expression EQ term .)
     LT              reduce using rule 19 (expression -> expression EQ term .)
     GT              reduce using rule 19 (expression -> expression EQ term .)
+    TERNARY         reduce using rule 19 (expression -> expression EQ term .)
     RPAREN          reduce using rule 19 (expression -> expression EQ term .)
     RBRACKET        reduce using rule 19 (expression -> expression EQ term .)
     COMMA           reduce using rule 19 (expression -> expression EQ term .)
-    TIMES           shift and go to state 40
-    DIVIDE          shift and go to state 41
+    COLON           reduce using rule 19 (expression -> expression EQ term .)
+    TIMES           shift and go to state 42
+    DIVIDE          shift and go to state 43
 
 
-state 55
+state 58
 
     (20) expression -> expression NE term .
     (24) term -> term . TIMES factor
@@ -1385,14 +1537,16 @@ state 55
     NE              reduce using rule 20 (expression -> expression NE term .)
     LT              reduce using rule 20 (expression -> expression NE term .)
     GT              reduce using rule 20 (expression -> expression NE term .)
+    TERNARY         reduce using rule 20 (expression -> expression NE term .)
     RPAREN          reduce using rule 20 (expression -> expression NE term .)
     RBRACKET        reduce using rule 20 (expression -> expression NE term .)
     COMMA           reduce using rule 20 (expression -> expression NE term .)
-    TIMES           shift and go to state 40
-    DIVIDE          shift and go to state 41
+    COLON           reduce using rule 20 (expression -> expression NE term .)
+    TIMES           shift and go to state 42
+    DIVIDE          shift and go to state 43
 
 
-state 56
+state 59
 
     (21) expression -> expression LT expression .
     (15) expression -> expression . PLUS term
@@ -1403,6 +1557,7 @@ state 56
     (20) expression -> expression . NE term
     (21) expression -> expression . LT expression
     (22) expression -> expression . GT expression
+    (39) expression -> expression . TERNARY expression COLON expression
 
     SEMICOLON       reduce using rule 21 (expression -> expression LT expression .)
     LOR             reduce using rule 21 (expression -> expression LT expression .)
@@ -1412,22 +1567,25 @@ state 56
     RPAREN          reduce using rule 21 (expression -> expression LT expression .)
     RBRACKET        reduce using rule 21 (expression -> expression LT expression .)
     COMMA           reduce using rule 21 (expression -> expression LT expression .)
-    PLUS            shift and go to state 25
-    MINUS           shift and go to state 26
-    EQ              shift and go to state 29
-    NE              shift and go to state 30
+    COLON           reduce using rule 21 (expression -> expression LT expression .)
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    EQ              shift and go to state 30
+    NE              shift and go to state 31
+    TERNARY         shift and go to state 34
 
   ! PLUS            [ reduce using rule 21 (expression -> expression LT expression .) ]
   ! MINUS           [ reduce using rule 21 (expression -> expression LT expression .) ]
   ! EQ              [ reduce using rule 21 (expression -> expression LT expression .) ]
   ! NE              [ reduce using rule 21 (expression -> expression LT expression .) ]
-  ! LOR             [ shift and go to state 27 ]
-  ! LAND            [ shift and go to state 28 ]
-  ! LT              [ shift and go to state 31 ]
-  ! GT              [ shift and go to state 32 ]
+  ! TERNARY         [ reduce using rule 21 (expression -> expression LT expression .) ]
+  ! LOR             [ shift and go to state 28 ]
+  ! LAND            [ shift and go to state 29 ]
+  ! LT              [ shift and go to state 32 ]
+  ! GT              [ shift and go to state 33 ]
 
 
-state 57
+state 60
 
     (22) expression -> expression GT expression .
     (15) expression -> expression . PLUS term
@@ -1438,6 +1596,7 @@ state 57
     (20) expression -> expression . NE term
     (21) expression -> expression . LT expression
     (22) expression -> expression . GT expression
+    (39) expression -> expression . TERNARY expression COLON expression
 
     SEMICOLON       reduce using rule 22 (expression -> expression GT expression .)
     LOR             reduce using rule 22 (expression -> expression GT expression .)
@@ -1447,22 +1606,50 @@ state 57
     RPAREN          reduce using rule 22 (expression -> expression GT expression .)
     RBRACKET        reduce using rule 22 (expression -> expression GT expression .)
     COMMA           reduce using rule 22 (expression -> expression GT expression .)
-    PLUS            shift and go to state 25
-    MINUS           shift and go to state 26
-    EQ              shift and go to state 29
-    NE              shift and go to state 30
+    COLON           reduce using rule 22 (expression -> expression GT expression .)
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    EQ              shift and go to state 30
+    NE              shift and go to state 31
+    TERNARY         shift and go to state 34
 
   ! PLUS            [ reduce using rule 22 (expression -> expression GT expression .) ]
   ! MINUS           [ reduce using rule 22 (expression -> expression GT expression .) ]
   ! EQ              [ reduce using rule 22 (expression -> expression GT expression .) ]
   ! NE              [ reduce using rule 22 (expression -> expression GT expression .) ]
-  ! LOR             [ shift and go to state 27 ]
-  ! LAND            [ shift and go to state 28 ]
-  ! LT              [ shift and go to state 31 ]
-  ! GT              [ shift and go to state 32 ]
+  ! TERNARY         [ reduce using rule 22 (expression -> expression GT expression .) ]
+  ! LOR             [ shift and go to state 28 ]
+  ! LAND            [ shift and go to state 29 ]
+  ! LT              [ shift and go to state 32 ]
+  ! GT              [ shift and go to state 33 ]
 
 
-state 58
+state 61
+
+    (39) expression -> expression TERNARY expression . COLON expression
+    (15) expression -> expression . PLUS term
+    (16) expression -> expression . MINUS term
+    (17) expression -> expression . LOR term
+    (18) expression -> expression . LAND term
+    (19) expression -> expression . EQ term
+    (20) expression -> expression . NE term
+    (21) expression -> expression . LT expression
+    (22) expression -> expression . GT expression
+    (39) expression -> expression . TERNARY expression COLON expression
+
+    COLON           shift and go to state 75
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    LOR             shift and go to state 28
+    LAND            shift and go to state 29
+    EQ              shift and go to state 30
+    NE              shift and go to state 31
+    LT              shift and go to state 32
+    GT              shift and go to state 33
+    TERNARY         shift and go to state 34
+
+
+state 62
 
     (9) statement -> FOR LPAREN expression . SEMICOLON expression SEMICOLON expression RPAREN statement
     (15) expression -> expression . PLUS term
@@ -1473,19 +1660,21 @@ state 58
     (20) expression -> expression . NE term
     (21) expression -> expression . LT expression
     (22) expression -> expression . GT expression
+    (39) expression -> expression . TERNARY expression COLON expression
 
-    SEMICOLON       shift and go to state 70
-    PLUS            shift and go to state 25
-    MINUS           shift and go to state 26
-    LOR             shift and go to state 27
-    LAND            shift and go to state 28
-    EQ              shift and go to state 29
-    NE              shift and go to state 30
-    LT              shift and go to state 31
-    GT              shift and go to state 32
+    SEMICOLON       shift and go to state 76
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    LOR             shift and go to state 28
+    LAND            shift and go to state 29
+    EQ              shift and go to state 30
+    NE              shift and go to state 31
+    LT              shift and go to state 32
+    GT              shift and go to state 33
+    TERNARY         shift and go to state 34
 
 
-state 59
+state 63
 
     (31) factor -> LPAREN expression RPAREN .
 
@@ -1500,12 +1689,14 @@ state 59
     NE              reduce using rule 31 (factor -> LPAREN expression RPAREN .)
     LT              reduce using rule 31 (factor -> LPAREN expression RPAREN .)
     GT              reduce using rule 31 (factor -> LPAREN expression RPAREN .)
+    TERNARY         reduce using rule 31 (factor -> LPAREN expression RPAREN .)
     RPAREN          reduce using rule 31 (factor -> LPAREN expression RPAREN .)
     RBRACKET        reduce using rule 31 (factor -> LPAREN expression RPAREN .)
     COMMA           reduce using rule 31 (factor -> LPAREN expression RPAREN .)
+    COLON           reduce using rule 31 (factor -> LPAREN expression RPAREN .)
 
 
-state 60
+state 64
 
     (32) expression -> ID EQUALS . expression
     (15) expression -> . expression PLUS term
@@ -1519,6 +1710,8 @@ state 60
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -1528,18 +1721,38 @@ state 60
     (30) factor -> . ID
     (31) factor -> . LPAREN expression RPAREN
 
-    ID              shift and go to state 35
+    ID              shift and go to state 37
     LBRACKET        shift and go to state 16
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
     LPAREN          shift and go to state 11
 
-    expression                     shift and go to state 71
+    expression                     shift and go to state 77
     term                           shift and go to state 15
     factor                         shift and go to state 17
 
-state 61
+state 65
+
+    (37) expression -> ID DECREMENT .
+
+    RPAREN          reduce using rule 37 (expression -> ID DECREMENT .)
+    PLUS            reduce using rule 37 (expression -> ID DECREMENT .)
+    MINUS           reduce using rule 37 (expression -> ID DECREMENT .)
+    LOR             reduce using rule 37 (expression -> ID DECREMENT .)
+    LAND            reduce using rule 37 (expression -> ID DECREMENT .)
+    EQ              reduce using rule 37 (expression -> ID DECREMENT .)
+    NE              reduce using rule 37 (expression -> ID DECREMENT .)
+    LT              reduce using rule 37 (expression -> ID DECREMENT .)
+    GT              reduce using rule 37 (expression -> ID DECREMENT .)
+    TERNARY         reduce using rule 37 (expression -> ID DECREMENT .)
+    RBRACKET        reduce using rule 37 (expression -> ID DECREMENT .)
+    COMMA           reduce using rule 37 (expression -> ID DECREMENT .)
+    SEMICOLON       reduce using rule 37 (expression -> ID DECREMENT .)
+    COLON           reduce using rule 37 (expression -> ID DECREMENT .)
+
+
+state 66
 
     (10) statement -> WHILE LPAREN expression . RPAREN statement
     (15) expression -> expression . PLUS term
@@ -1550,19 +1763,21 @@ state 61
     (20) expression -> expression . NE term
     (21) expression -> expression . LT expression
     (22) expression -> expression . GT expression
+    (39) expression -> expression . TERNARY expression COLON expression
 
-    RPAREN          shift and go to state 72
-    PLUS            shift and go to state 25
-    MINUS           shift and go to state 26
-    LOR             shift and go to state 27
-    LAND            shift and go to state 28
-    EQ              shift and go to state 29
-    NE              shift and go to state 30
-    LT              shift and go to state 31
-    GT              shift and go to state 32
+    RPAREN          shift and go to state 78
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    LOR             shift and go to state 28
+    LAND            shift and go to state 29
+    EQ              shift and go to state 30
+    NE              shift and go to state 31
+    LT              shift and go to state 32
+    GT              shift and go to state 33
+    TERNARY         shift and go to state 34
 
 
-state 62
+state 67
 
     (11) statement -> LBRACE statements RBRACE .
 
@@ -1583,7 +1798,7 @@ state 62
     ELSE            reduce using rule 11 (statement -> LBRACE statements RBRACE .)
 
 
-state 63
+state 68
 
     (12) statement -> IF LPAREN expression . RPAREN statement
     (13) statement -> IF LPAREN expression . RPAREN statement ELSE statement
@@ -1595,19 +1810,21 @@ state 63
     (20) expression -> expression . NE term
     (21) expression -> expression . LT expression
     (22) expression -> expression . GT expression
+    (39) expression -> expression . TERNARY expression COLON expression
 
-    RPAREN          shift and go to state 73
-    PLUS            shift and go to state 25
-    MINUS           shift and go to state 26
-    LOR             shift and go to state 27
-    LAND            shift and go to state 28
-    EQ              shift and go to state 29
-    NE              shift and go to state 30
-    LT              shift and go to state 31
-    GT              shift and go to state 32
+    RPAREN          shift and go to state 79
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    LOR             shift and go to state 28
+    LAND            shift and go to state 29
+    EQ              shift and go to state 30
+    NE              shift and go to state 31
+    LT              shift and go to state 32
+    GT              shift and go to state 33
+    TERNARY         shift and go to state 34
 
 
-state 64
+state 69
 
     (24) term -> term TIMES factor .
 
@@ -1622,12 +1839,14 @@ state 64
     NE              reduce using rule 24 (term -> term TIMES factor .)
     LT              reduce using rule 24 (term -> term TIMES factor .)
     GT              reduce using rule 24 (term -> term TIMES factor .)
+    TERNARY         reduce using rule 24 (term -> term TIMES factor .)
     RPAREN          reduce using rule 24 (term -> term TIMES factor .)
     RBRACKET        reduce using rule 24 (term -> term TIMES factor .)
     COMMA           reduce using rule 24 (term -> term TIMES factor .)
+    COLON           reduce using rule 24 (term -> term TIMES factor .)
 
 
-state 65
+state 70
 
     (25) term -> term DIVIDE factor .
 
@@ -1642,12 +1861,14 @@ state 65
     NE              reduce using rule 25 (term -> term DIVIDE factor .)
     LT              reduce using rule 25 (term -> term DIVIDE factor .)
     GT              reduce using rule 25 (term -> term DIVIDE factor .)
+    TERNARY         reduce using rule 25 (term -> term DIVIDE factor .)
     RPAREN          reduce using rule 25 (term -> term DIVIDE factor .)
     RBRACKET        reduce using rule 25 (term -> term DIVIDE factor .)
     COMMA           reduce using rule 25 (term -> term DIVIDE factor .)
+    COLON           reduce using rule 25 (term -> term DIVIDE factor .)
 
 
-state 66
+state 71
 
     (33) expression -> LBRACKET elements RBRACKET .
 
@@ -1660,12 +1881,14 @@ state 66
     NE              reduce using rule 33 (expression -> LBRACKET elements RBRACKET .)
     LT              reduce using rule 33 (expression -> LBRACKET elements RBRACKET .)
     GT              reduce using rule 33 (expression -> LBRACKET elements RBRACKET .)
+    TERNARY         reduce using rule 33 (expression -> LBRACKET elements RBRACKET .)
     RPAREN          reduce using rule 33 (expression -> LBRACKET elements RBRACKET .)
     RBRACKET        reduce using rule 33 (expression -> LBRACKET elements RBRACKET .)
     COMMA           reduce using rule 33 (expression -> LBRACKET elements RBRACKET .)
+    COLON           reduce using rule 33 (expression -> LBRACKET elements RBRACKET .)
 
 
-state 67
+state 72
 
     (34) elements -> elements COMMA . expression
     (15) expression -> . expression PLUS term
@@ -1679,6 +1902,8 @@ state 67
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -1688,18 +1913,18 @@ state 67
     (30) factor -> . ID
     (31) factor -> . LPAREN expression RPAREN
 
-    ID              shift and go to state 35
+    ID              shift and go to state 37
     LBRACKET        shift and go to state 16
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
     LPAREN          shift and go to state 11
 
-    expression                     shift and go to state 74
+    expression                     shift and go to state 80
     term                           shift and go to state 15
     factor                         shift and go to state 17
 
-state 68
+state 73
 
     (7) statement -> ID EQUALS expression SEMICOLON .
 
@@ -1720,7 +1945,7 @@ state 68
     ELSE            reduce using rule 7 (statement -> ID EQUALS expression SEMICOLON .)
 
 
-state 69
+state 74
 
     (8) statement -> ID EQUALS STRING_LITERAL SEMICOLON .
 
@@ -1741,7 +1966,43 @@ state 69
     ELSE            reduce using rule 8 (statement -> ID EQUALS STRING_LITERAL SEMICOLON .)
 
 
-state 70
+state 75
+
+    (39) expression -> expression TERNARY expression COLON . expression
+    (15) expression -> . expression PLUS term
+    (16) expression -> . expression MINUS term
+    (17) expression -> . expression LOR term
+    (18) expression -> . expression LAND term
+    (19) expression -> . expression EQ term
+    (20) expression -> . expression NE term
+    (21) expression -> . expression LT expression
+    (22) expression -> . expression GT expression
+    (23) expression -> . term
+    (32) expression -> . ID EQUALS expression
+    (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
+    (24) term -> . term TIMES factor
+    (25) term -> . term DIVIDE factor
+    (26) term -> . factor
+    (27) factor -> . NUMBER
+    (28) factor -> . FLOAT
+    (29) factor -> . STRING_LITERAL
+    (30) factor -> . ID
+    (31) factor -> . LPAREN expression RPAREN
+
+    ID              shift and go to state 37
+    LBRACKET        shift and go to state 16
+    NUMBER          shift and go to state 18
+    FLOAT           shift and go to state 38
+    STRING_LITERAL  shift and go to state 9
+    LPAREN          shift and go to state 11
+
+    expression                     shift and go to state 81
+    term                           shift and go to state 15
+    factor                         shift and go to state 17
+
+state 76
 
     (9) statement -> FOR LPAREN expression SEMICOLON . expression SEMICOLON expression RPAREN statement
     (15) expression -> . expression PLUS term
@@ -1755,6 +2016,8 @@ state 70
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -1764,18 +2027,18 @@ state 70
     (30) factor -> . ID
     (31) factor -> . LPAREN expression RPAREN
 
-    ID              shift and go to state 35
+    ID              shift and go to state 37
     LBRACKET        shift and go to state 16
     NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
+    FLOAT           shift and go to state 38
     STRING_LITERAL  shift and go to state 9
     LPAREN          shift and go to state 11
 
-    expression                     shift and go to state 75
+    expression                     shift and go to state 82
     term                           shift and go to state 15
     factor                         shift and go to state 17
 
-state 71
+state 77
 
     (32) expression -> ID EQUALS expression .
     (15) expression -> expression . PLUS term
@@ -1786,6 +2049,7 @@ state 71
     (20) expression -> expression . NE term
     (21) expression -> expression . LT expression
     (22) expression -> expression . GT expression
+    (39) expression -> expression . TERNARY expression COLON expression
 
   ! shift/reduce conflict for PLUS resolved as shift
   ! shift/reduce conflict for MINUS resolved as shift
@@ -1795,18 +2059,21 @@ state 71
   ! shift/reduce conflict for NE resolved as shift
   ! shift/reduce conflict for LT resolved as shift
   ! shift/reduce conflict for GT resolved as shift
+  ! shift/reduce conflict for TERNARY resolved as shift
     RPAREN          reduce using rule 32 (expression -> ID EQUALS expression .)
     RBRACKET        reduce using rule 32 (expression -> ID EQUALS expression .)
     COMMA           reduce using rule 32 (expression -> ID EQUALS expression .)
     SEMICOLON       reduce using rule 32 (expression -> ID EQUALS expression .)
-    PLUS            shift and go to state 25
-    MINUS           shift and go to state 26
-    LOR             shift and go to state 27
-    LAND            shift and go to state 28
-    EQ              shift and go to state 29
-    NE              shift and go to state 30
-    LT              shift and go to state 31
-    GT              shift and go to state 32
+    COLON           reduce using rule 32 (expression -> ID EQUALS expression .)
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    LOR             shift and go to state 28
+    LAND            shift and go to state 29
+    EQ              shift and go to state 30
+    NE              shift and go to state 31
+    LT              shift and go to state 32
+    GT              shift and go to state 33
+    TERNARY         shift and go to state 34
 
   ! PLUS            [ reduce using rule 32 (expression -> ID EQUALS expression .) ]
   ! MINUS           [ reduce using rule 32 (expression -> ID EQUALS expression .) ]
@@ -1816,9 +2083,10 @@ state 71
   ! NE              [ reduce using rule 32 (expression -> ID EQUALS expression .) ]
   ! LT              [ reduce using rule 32 (expression -> ID EQUALS expression .) ]
   ! GT              [ reduce using rule 32 (expression -> ID EQUALS expression .) ]
+  ! TERNARY         [ reduce using rule 32 (expression -> ID EQUALS expression .) ]
 
 
-state 72
+state 78
 
     (10) statement -> WHILE LPAREN expression RPAREN . statement
     (4) statement -> . INT ID SEMICOLON
@@ -1832,6 +2100,7 @@ state 72
     (12) statement -> . IF LPAREN expression RPAREN statement
     (13) statement -> . IF LPAREN expression RPAREN statement ELSE statement
     (14) statement -> . expression SEMICOLON
+    (38) statement -> . ID DECREMENT SEMICOLON
     (15) expression -> . expression PLUS term
     (16) expression -> . expression MINUS term
     (17) expression -> . expression LOR term
@@ -1843,334 +2112,8 @@ state 72
     (23) expression -> . term
     (32) expression -> . ID EQUALS expression
     (33) expression -> . LBRACKET elements RBRACKET
-    (24) term -> . term TIMES factor
-    (25) term -> . term DIVIDE factor
-    (26) term -> . factor
-    (27) factor -> . NUMBER
-    (28) factor -> . FLOAT
-    (29) factor -> . STRING_LITERAL
-    (30) factor -> . ID
-    (31) factor -> . LPAREN expression RPAREN
-
-    INT             shift and go to state 4
-    FLOAT           shift and go to state 6
-    STRING          shift and go to state 7
-    ID              shift and go to state 5
-    FOR             shift and go to state 10
-    WHILE           shift and go to state 12
-    LBRACE          shift and go to state 13
-    IF              shift and go to state 14
-    LBRACKET        shift and go to state 16
-    NUMBER          shift and go to state 18
-    STRING_LITERAL  shift and go to state 9
-    LPAREN          shift and go to state 11
-
-    expression                     shift and go to state 8
-    statement                      shift and go to state 76
-    term                           shift and go to state 15
-    factor                         shift and go to state 17
-
-state 73
-
-    (12) statement -> IF LPAREN expression RPAREN . statement
-    (13) statement -> IF LPAREN expression RPAREN . statement ELSE statement
-    (4) statement -> . INT ID SEMICOLON
-    (5) statement -> . FLOAT ID SEMICOLON
-    (6) statement -> . STRING ID SEMICOLON
-    (7) statement -> . ID EQUALS expression SEMICOLON
-    (8) statement -> . ID EQUALS STRING_LITERAL SEMICOLON
-    (9) statement -> . FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement
-    (10) statement -> . WHILE LPAREN expression RPAREN statement
-    (11) statement -> . LBRACE statements RBRACE
-    (12) statement -> . IF LPAREN expression RPAREN statement
-    (13) statement -> . IF LPAREN expression RPAREN statement ELSE statement
-    (14) statement -> . expression SEMICOLON
-    (15) expression -> . expression PLUS term
-    (16) expression -> . expression MINUS term
-    (17) expression -> . expression LOR term
-    (18) expression -> . expression LAND term
-    (19) expression -> . expression EQ term
-    (20) expression -> . expression NE term
-    (21) expression -> . expression LT expression
-    (22) expression -> . expression GT expression
-    (23) expression -> . term
-    (32) expression -> . ID EQUALS expression
-    (33) expression -> . LBRACKET elements RBRACKET
-    (24) term -> . term TIMES factor
-    (25) term -> . term DIVIDE factor
-    (26) term -> . factor
-    (27) factor -> . NUMBER
-    (28) factor -> . FLOAT
-    (29) factor -> . STRING_LITERAL
-    (30) factor -> . ID
-    (31) factor -> . LPAREN expression RPAREN
-
-    INT             shift and go to state 4
-    FLOAT           shift and go to state 6
-    STRING          shift and go to state 7
-    ID              shift and go to state 5
-    FOR             shift and go to state 10
-    WHILE           shift and go to state 12
-    LBRACE          shift and go to state 13
-    IF              shift and go to state 14
-    LBRACKET        shift and go to state 16
-    NUMBER          shift and go to state 18
-    STRING_LITERAL  shift and go to state 9
-    LPAREN          shift and go to state 11
-
-    expression                     shift and go to state 8
-    statement                      shift and go to state 77
-    term                           shift and go to state 15
-    factor                         shift and go to state 17
-
-state 74
-
-    (34) elements -> elements COMMA expression .
-    (15) expression -> expression . PLUS term
-    (16) expression -> expression . MINUS term
-    (17) expression -> expression . LOR term
-    (18) expression -> expression . LAND term
-    (19) expression -> expression . EQ term
-    (20) expression -> expression . NE term
-    (21) expression -> expression . LT expression
-    (22) expression -> expression . GT expression
-
-    RBRACKET        reduce using rule 34 (elements -> elements COMMA expression .)
-    COMMA           reduce using rule 34 (elements -> elements COMMA expression .)
-    PLUS            shift and go to state 25
-    MINUS           shift and go to state 26
-    LOR             shift and go to state 27
-    LAND            shift and go to state 28
-    EQ              shift and go to state 29
-    NE              shift and go to state 30
-    LT              shift and go to state 31
-    GT              shift and go to state 32
-
-
-state 75
-
-    (9) statement -> FOR LPAREN expression SEMICOLON expression . SEMICOLON expression RPAREN statement
-    (15) expression -> expression . PLUS term
-    (16) expression -> expression . MINUS term
-    (17) expression -> expression . LOR term
-    (18) expression -> expression . LAND term
-    (19) expression -> expression . EQ term
-    (20) expression -> expression . NE term
-    (21) expression -> expression . LT expression
-    (22) expression -> expression . GT expression
-
-    SEMICOLON       shift and go to state 78
-    PLUS            shift and go to state 25
-    MINUS           shift and go to state 26
-    LOR             shift and go to state 27
-    LAND            shift and go to state 28
-    EQ              shift and go to state 29
-    NE              shift and go to state 30
-    LT              shift and go to state 31
-    GT              shift and go to state 32
-
-
-state 76
-
-    (10) statement -> WHILE LPAREN expression RPAREN statement .
-
-    INT             reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
-    FLOAT           reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
-    STRING          reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
-    ID              reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
-    FOR             reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
-    WHILE           reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
-    LBRACE          reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
-    IF              reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
-    LBRACKET        reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
-    NUMBER          reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
-    STRING_LITERAL  reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
-    LPAREN          reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
-    $end            reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
-    RBRACE          reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
-    ELSE            reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
-
-
-state 77
-
-    (12) statement -> IF LPAREN expression RPAREN statement .
-    (13) statement -> IF LPAREN expression RPAREN statement . ELSE statement
-
-  ! shift/reduce conflict for ELSE resolved as shift
-    INT             reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
-    FLOAT           reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
-    STRING          reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
-    ID              reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
-    FOR             reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
-    WHILE           reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
-    LBRACE          reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
-    IF              reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
-    LBRACKET        reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
-    NUMBER          reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
-    STRING_LITERAL  reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
-    LPAREN          reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
-    $end            reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
-    RBRACE          reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
-    ELSE            shift and go to state 79
-
-  ! ELSE            [ reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .) ]
-
-
-state 78
-
-    (9) statement -> FOR LPAREN expression SEMICOLON expression SEMICOLON . expression RPAREN statement
-    (15) expression -> . expression PLUS term
-    (16) expression -> . expression MINUS term
-    (17) expression -> . expression LOR term
-    (18) expression -> . expression LAND term
-    (19) expression -> . expression EQ term
-    (20) expression -> . expression NE term
-    (21) expression -> . expression LT expression
-    (22) expression -> . expression GT expression
-    (23) expression -> . term
-    (32) expression -> . ID EQUALS expression
-    (33) expression -> . LBRACKET elements RBRACKET
-    (24) term -> . term TIMES factor
-    (25) term -> . term DIVIDE factor
-    (26) term -> . factor
-    (27) factor -> . NUMBER
-    (28) factor -> . FLOAT
-    (29) factor -> . STRING_LITERAL
-    (30) factor -> . ID
-    (31) factor -> . LPAREN expression RPAREN
-
-    ID              shift and go to state 35
-    LBRACKET        shift and go to state 16
-    NUMBER          shift and go to state 18
-    FLOAT           shift and go to state 36
-    STRING_LITERAL  shift and go to state 9
-    LPAREN          shift and go to state 11
-
-    expression                     shift and go to state 80
-    term                           shift and go to state 15
-    factor                         shift and go to state 17
-
-state 79
-
-    (13) statement -> IF LPAREN expression RPAREN statement ELSE . statement
-    (4) statement -> . INT ID SEMICOLON
-    (5) statement -> . FLOAT ID SEMICOLON
-    (6) statement -> . STRING ID SEMICOLON
-    (7) statement -> . ID EQUALS expression SEMICOLON
-    (8) statement -> . ID EQUALS STRING_LITERAL SEMICOLON
-    (9) statement -> . FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement
-    (10) statement -> . WHILE LPAREN expression RPAREN statement
-    (11) statement -> . LBRACE statements RBRACE
-    (12) statement -> . IF LPAREN expression RPAREN statement
-    (13) statement -> . IF LPAREN expression RPAREN statement ELSE statement
-    (14) statement -> . expression SEMICOLON
-    (15) expression -> . expression PLUS term
-    (16) expression -> . expression MINUS term
-    (17) expression -> . expression LOR term
-    (18) expression -> . expression LAND term
-    (19) expression -> . expression EQ term
-    (20) expression -> . expression NE term
-    (21) expression -> . expression LT expression
-    (22) expression -> . expression GT expression
-    (23) expression -> . term
-    (32) expression -> . ID EQUALS expression
-    (33) expression -> . LBRACKET elements RBRACKET
-    (24) term -> . term TIMES factor
-    (25) term -> . term DIVIDE factor
-    (26) term -> . factor
-    (27) factor -> . NUMBER
-    (28) factor -> . FLOAT
-    (29) factor -> . STRING_LITERAL
-    (30) factor -> . ID
-    (31) factor -> . LPAREN expression RPAREN
-
-    INT             shift and go to state 4
-    FLOAT           shift and go to state 6
-    STRING          shift and go to state 7
-    ID              shift and go to state 5
-    FOR             shift and go to state 10
-    WHILE           shift and go to state 12
-    LBRACE          shift and go to state 13
-    IF              shift and go to state 14
-    LBRACKET        shift and go to state 16
-    NUMBER          shift and go to state 18
-    STRING_LITERAL  shift and go to state 9
-    LPAREN          shift and go to state 11
-
-    expression                     shift and go to state 8
-    statement                      shift and go to state 81
-    term                           shift and go to state 15
-    factor                         shift and go to state 17
-
-state 80
-
-    (9) statement -> FOR LPAREN expression SEMICOLON expression SEMICOLON expression . RPAREN statement
-    (15) expression -> expression . PLUS term
-    (16) expression -> expression . MINUS term
-    (17) expression -> expression . LOR term
-    (18) expression -> expression . LAND term
-    (19) expression -> expression . EQ term
-    (20) expression -> expression . NE term
-    (21) expression -> expression . LT expression
-    (22) expression -> expression . GT expression
-
-    RPAREN          shift and go to state 82
-    PLUS            shift and go to state 25
-    MINUS           shift and go to state 26
-    LOR             shift and go to state 27
-    LAND            shift and go to state 28
-    EQ              shift and go to state 29
-    NE              shift and go to state 30
-    LT              shift and go to state 31
-    GT              shift and go to state 32
-
-
-state 81
-
-    (13) statement -> IF LPAREN expression RPAREN statement ELSE statement .
-
-    INT             reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
-    FLOAT           reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
-    STRING          reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
-    ID              reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
-    FOR             reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
-    WHILE           reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
-    LBRACE          reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
-    IF              reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
-    LBRACKET        reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
-    NUMBER          reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
-    STRING_LITERAL  reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
-    LPAREN          reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
-    $end            reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
-    RBRACE          reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
-    ELSE            reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
-
-
-state 82
-
-    (9) statement -> FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN . statement
-    (4) statement -> . INT ID SEMICOLON
-    (5) statement -> . FLOAT ID SEMICOLON
-    (6) statement -> . STRING ID SEMICOLON
-    (7) statement -> . ID EQUALS expression SEMICOLON
-    (8) statement -> . ID EQUALS STRING_LITERAL SEMICOLON
-    (9) statement -> . FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement
-    (10) statement -> . WHILE LPAREN expression RPAREN statement
-    (11) statement -> . LBRACE statements RBRACE
-    (12) statement -> . IF LPAREN expression RPAREN statement
-    (13) statement -> . IF LPAREN expression RPAREN statement ELSE statement
-    (14) statement -> . expression SEMICOLON
-    (15) expression -> . expression PLUS term
-    (16) expression -> . expression MINUS term
-    (17) expression -> . expression LOR term
-    (18) expression -> . expression LAND term
-    (19) expression -> . expression EQ term
-    (20) expression -> . expression NE term
-    (21) expression -> . expression LT expression
-    (22) expression -> . expression GT expression
-    (23) expression -> . term
-    (32) expression -> . ID EQUALS expression
-    (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
     (24) term -> . term TIMES factor
     (25) term -> . term DIVIDE factor
     (26) term -> . factor
@@ -2198,7 +2141,400 @@ state 82
     term                           shift and go to state 15
     factor                         shift and go to state 17
 
+state 79
+
+    (12) statement -> IF LPAREN expression RPAREN . statement
+    (13) statement -> IF LPAREN expression RPAREN . statement ELSE statement
+    (4) statement -> . INT ID SEMICOLON
+    (5) statement -> . FLOAT ID SEMICOLON
+    (6) statement -> . STRING ID SEMICOLON
+    (7) statement -> . ID EQUALS expression SEMICOLON
+    (8) statement -> . ID EQUALS STRING_LITERAL SEMICOLON
+    (9) statement -> . FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement
+    (10) statement -> . WHILE LPAREN expression RPAREN statement
+    (11) statement -> . LBRACE statements RBRACE
+    (12) statement -> . IF LPAREN expression RPAREN statement
+    (13) statement -> . IF LPAREN expression RPAREN statement ELSE statement
+    (14) statement -> . expression SEMICOLON
+    (38) statement -> . ID DECREMENT SEMICOLON
+    (15) expression -> . expression PLUS term
+    (16) expression -> . expression MINUS term
+    (17) expression -> . expression LOR term
+    (18) expression -> . expression LAND term
+    (19) expression -> . expression EQ term
+    (20) expression -> . expression NE term
+    (21) expression -> . expression LT expression
+    (22) expression -> . expression GT expression
+    (23) expression -> . term
+    (32) expression -> . ID EQUALS expression
+    (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
+    (24) term -> . term TIMES factor
+    (25) term -> . term DIVIDE factor
+    (26) term -> . factor
+    (27) factor -> . NUMBER
+    (28) factor -> . FLOAT
+    (29) factor -> . STRING_LITERAL
+    (30) factor -> . ID
+    (31) factor -> . LPAREN expression RPAREN
+
+    INT             shift and go to state 4
+    FLOAT           shift and go to state 6
+    STRING          shift and go to state 7
+    ID              shift and go to state 5
+    FOR             shift and go to state 10
+    WHILE           shift and go to state 12
+    LBRACE          shift and go to state 13
+    IF              shift and go to state 14
+    LBRACKET        shift and go to state 16
+    NUMBER          shift and go to state 18
+    STRING_LITERAL  shift and go to state 9
+    LPAREN          shift and go to state 11
+
+    expression                     shift and go to state 8
+    statement                      shift and go to state 84
+    term                           shift and go to state 15
+    factor                         shift and go to state 17
+
+state 80
+
+    (34) elements -> elements COMMA expression .
+    (15) expression -> expression . PLUS term
+    (16) expression -> expression . MINUS term
+    (17) expression -> expression . LOR term
+    (18) expression -> expression . LAND term
+    (19) expression -> expression . EQ term
+    (20) expression -> expression . NE term
+    (21) expression -> expression . LT expression
+    (22) expression -> expression . GT expression
+    (39) expression -> expression . TERNARY expression COLON expression
+
+    RBRACKET        reduce using rule 34 (elements -> elements COMMA expression .)
+    COMMA           reduce using rule 34 (elements -> elements COMMA expression .)
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    LOR             shift and go to state 28
+    LAND            shift and go to state 29
+    EQ              shift and go to state 30
+    NE              shift and go to state 31
+    LT              shift and go to state 32
+    GT              shift and go to state 33
+    TERNARY         shift and go to state 34
+
+
+state 81
+
+    (39) expression -> expression TERNARY expression COLON expression .
+    (15) expression -> expression . PLUS term
+    (16) expression -> expression . MINUS term
+    (17) expression -> expression . LOR term
+    (18) expression -> expression . LAND term
+    (19) expression -> expression . EQ term
+    (20) expression -> expression . NE term
+    (21) expression -> expression . LT expression
+    (22) expression -> expression . GT expression
+    (39) expression -> expression . TERNARY expression COLON expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for LOR resolved as shift
+  ! shift/reduce conflict for LAND resolved as shift
+  ! shift/reduce conflict for EQ resolved as shift
+  ! shift/reduce conflict for NE resolved as shift
+  ! shift/reduce conflict for LT resolved as shift
+  ! shift/reduce conflict for GT resolved as shift
+  ! shift/reduce conflict for TERNARY resolved as shift
+    SEMICOLON       reduce using rule 39 (expression -> expression TERNARY expression COLON expression .)
+    RPAREN          reduce using rule 39 (expression -> expression TERNARY expression COLON expression .)
+    RBRACKET        reduce using rule 39 (expression -> expression TERNARY expression COLON expression .)
+    COMMA           reduce using rule 39 (expression -> expression TERNARY expression COLON expression .)
+    COLON           reduce using rule 39 (expression -> expression TERNARY expression COLON expression .)
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    LOR             shift and go to state 28
+    LAND            shift and go to state 29
+    EQ              shift and go to state 30
+    NE              shift and go to state 31
+    LT              shift and go to state 32
+    GT              shift and go to state 33
+    TERNARY         shift and go to state 34
+
+  ! PLUS            [ reduce using rule 39 (expression -> expression TERNARY expression COLON expression .) ]
+  ! MINUS           [ reduce using rule 39 (expression -> expression TERNARY expression COLON expression .) ]
+  ! LOR             [ reduce using rule 39 (expression -> expression TERNARY expression COLON expression .) ]
+  ! LAND            [ reduce using rule 39 (expression -> expression TERNARY expression COLON expression .) ]
+  ! EQ              [ reduce using rule 39 (expression -> expression TERNARY expression COLON expression .) ]
+  ! NE              [ reduce using rule 39 (expression -> expression TERNARY expression COLON expression .) ]
+  ! LT              [ reduce using rule 39 (expression -> expression TERNARY expression COLON expression .) ]
+  ! GT              [ reduce using rule 39 (expression -> expression TERNARY expression COLON expression .) ]
+  ! TERNARY         [ reduce using rule 39 (expression -> expression TERNARY expression COLON expression .) ]
+
+
+state 82
+
+    (9) statement -> FOR LPAREN expression SEMICOLON expression . SEMICOLON expression RPAREN statement
+    (15) expression -> expression . PLUS term
+    (16) expression -> expression . MINUS term
+    (17) expression -> expression . LOR term
+    (18) expression -> expression . LAND term
+    (19) expression -> expression . EQ term
+    (20) expression -> expression . NE term
+    (21) expression -> expression . LT expression
+    (22) expression -> expression . GT expression
+    (39) expression -> expression . TERNARY expression COLON expression
+
+    SEMICOLON       shift and go to state 85
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    LOR             shift and go to state 28
+    LAND            shift and go to state 29
+    EQ              shift and go to state 30
+    NE              shift and go to state 31
+    LT              shift and go to state 32
+    GT              shift and go to state 33
+    TERNARY         shift and go to state 34
+
+
 state 83
+
+    (10) statement -> WHILE LPAREN expression RPAREN statement .
+
+    INT             reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
+    FLOAT           reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
+    STRING          reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
+    ID              reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
+    FOR             reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
+    WHILE           reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
+    LBRACE          reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
+    IF              reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
+    LBRACKET        reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
+    NUMBER          reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
+    STRING_LITERAL  reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
+    LPAREN          reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
+    $end            reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
+    RBRACE          reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
+    ELSE            reduce using rule 10 (statement -> WHILE LPAREN expression RPAREN statement .)
+
+
+state 84
+
+    (12) statement -> IF LPAREN expression RPAREN statement .
+    (13) statement -> IF LPAREN expression RPAREN statement . ELSE statement
+
+  ! shift/reduce conflict for ELSE resolved as shift
+    INT             reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
+    FLOAT           reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
+    STRING          reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
+    ID              reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
+    FOR             reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
+    WHILE           reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
+    LBRACE          reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
+    IF              reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
+    LBRACKET        reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
+    NUMBER          reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
+    STRING_LITERAL  reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
+    LPAREN          reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
+    $end            reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
+    RBRACE          reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .)
+    ELSE            shift and go to state 86
+
+  ! ELSE            [ reduce using rule 12 (statement -> IF LPAREN expression RPAREN statement .) ]
+
+
+state 85
+
+    (9) statement -> FOR LPAREN expression SEMICOLON expression SEMICOLON . expression RPAREN statement
+    (15) expression -> . expression PLUS term
+    (16) expression -> . expression MINUS term
+    (17) expression -> . expression LOR term
+    (18) expression -> . expression LAND term
+    (19) expression -> . expression EQ term
+    (20) expression -> . expression NE term
+    (21) expression -> . expression LT expression
+    (22) expression -> . expression GT expression
+    (23) expression -> . term
+    (32) expression -> . ID EQUALS expression
+    (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
+    (24) term -> . term TIMES factor
+    (25) term -> . term DIVIDE factor
+    (26) term -> . factor
+    (27) factor -> . NUMBER
+    (28) factor -> . FLOAT
+    (29) factor -> . STRING_LITERAL
+    (30) factor -> . ID
+    (31) factor -> . LPAREN expression RPAREN
+
+    ID              shift and go to state 37
+    LBRACKET        shift and go to state 16
+    NUMBER          shift and go to state 18
+    FLOAT           shift and go to state 38
+    STRING_LITERAL  shift and go to state 9
+    LPAREN          shift and go to state 11
+
+    expression                     shift and go to state 87
+    term                           shift and go to state 15
+    factor                         shift and go to state 17
+
+state 86
+
+    (13) statement -> IF LPAREN expression RPAREN statement ELSE . statement
+    (4) statement -> . INT ID SEMICOLON
+    (5) statement -> . FLOAT ID SEMICOLON
+    (6) statement -> . STRING ID SEMICOLON
+    (7) statement -> . ID EQUALS expression SEMICOLON
+    (8) statement -> . ID EQUALS STRING_LITERAL SEMICOLON
+    (9) statement -> . FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement
+    (10) statement -> . WHILE LPAREN expression RPAREN statement
+    (11) statement -> . LBRACE statements RBRACE
+    (12) statement -> . IF LPAREN expression RPAREN statement
+    (13) statement -> . IF LPAREN expression RPAREN statement ELSE statement
+    (14) statement -> . expression SEMICOLON
+    (38) statement -> . ID DECREMENT SEMICOLON
+    (15) expression -> . expression PLUS term
+    (16) expression -> . expression MINUS term
+    (17) expression -> . expression LOR term
+    (18) expression -> . expression LAND term
+    (19) expression -> . expression EQ term
+    (20) expression -> . expression NE term
+    (21) expression -> . expression LT expression
+    (22) expression -> . expression GT expression
+    (23) expression -> . term
+    (32) expression -> . ID EQUALS expression
+    (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
+    (24) term -> . term TIMES factor
+    (25) term -> . term DIVIDE factor
+    (26) term -> . factor
+    (27) factor -> . NUMBER
+    (28) factor -> . FLOAT
+    (29) factor -> . STRING_LITERAL
+    (30) factor -> . ID
+    (31) factor -> . LPAREN expression RPAREN
+
+    INT             shift and go to state 4
+    FLOAT           shift and go to state 6
+    STRING          shift and go to state 7
+    ID              shift and go to state 5
+    FOR             shift and go to state 10
+    WHILE           shift and go to state 12
+    LBRACE          shift and go to state 13
+    IF              shift and go to state 14
+    LBRACKET        shift and go to state 16
+    NUMBER          shift and go to state 18
+    STRING_LITERAL  shift and go to state 9
+    LPAREN          shift and go to state 11
+
+    expression                     shift and go to state 8
+    statement                      shift and go to state 88
+    term                           shift and go to state 15
+    factor                         shift and go to state 17
+
+state 87
+
+    (9) statement -> FOR LPAREN expression SEMICOLON expression SEMICOLON expression . RPAREN statement
+    (15) expression -> expression . PLUS term
+    (16) expression -> expression . MINUS term
+    (17) expression -> expression . LOR term
+    (18) expression -> expression . LAND term
+    (19) expression -> expression . EQ term
+    (20) expression -> expression . NE term
+    (21) expression -> expression . LT expression
+    (22) expression -> expression . GT expression
+    (39) expression -> expression . TERNARY expression COLON expression
+
+    RPAREN          shift and go to state 89
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    LOR             shift and go to state 28
+    LAND            shift and go to state 29
+    EQ              shift and go to state 30
+    NE              shift and go to state 31
+    LT              shift and go to state 32
+    GT              shift and go to state 33
+    TERNARY         shift and go to state 34
+
+
+state 88
+
+    (13) statement -> IF LPAREN expression RPAREN statement ELSE statement .
+
+    INT             reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
+    FLOAT           reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
+    STRING          reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
+    ID              reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
+    FOR             reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
+    WHILE           reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
+    LBRACE          reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
+    IF              reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
+    LBRACKET        reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
+    NUMBER          reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
+    STRING_LITERAL  reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
+    LPAREN          reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
+    $end            reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
+    RBRACE          reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
+    ELSE            reduce using rule 13 (statement -> IF LPAREN expression RPAREN statement ELSE statement .)
+
+
+state 89
+
+    (9) statement -> FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN . statement
+    (4) statement -> . INT ID SEMICOLON
+    (5) statement -> . FLOAT ID SEMICOLON
+    (6) statement -> . STRING ID SEMICOLON
+    (7) statement -> . ID EQUALS expression SEMICOLON
+    (8) statement -> . ID EQUALS STRING_LITERAL SEMICOLON
+    (9) statement -> . FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement
+    (10) statement -> . WHILE LPAREN expression RPAREN statement
+    (11) statement -> . LBRACE statements RBRACE
+    (12) statement -> . IF LPAREN expression RPAREN statement
+    (13) statement -> . IF LPAREN expression RPAREN statement ELSE statement
+    (14) statement -> . expression SEMICOLON
+    (38) statement -> . ID DECREMENT SEMICOLON
+    (15) expression -> . expression PLUS term
+    (16) expression -> . expression MINUS term
+    (17) expression -> . expression LOR term
+    (18) expression -> . expression LAND term
+    (19) expression -> . expression EQ term
+    (20) expression -> . expression NE term
+    (21) expression -> . expression LT expression
+    (22) expression -> . expression GT expression
+    (23) expression -> . term
+    (32) expression -> . ID EQUALS expression
+    (33) expression -> . LBRACKET elements RBRACKET
+    (37) expression -> . ID DECREMENT
+    (39) expression -> . expression TERNARY expression COLON expression
+    (24) term -> . term TIMES factor
+    (25) term -> . term DIVIDE factor
+    (26) term -> . factor
+    (27) factor -> . NUMBER
+    (28) factor -> . FLOAT
+    (29) factor -> . STRING_LITERAL
+    (30) factor -> . ID
+    (31) factor -> . LPAREN expression RPAREN
+
+    INT             shift and go to state 4
+    FLOAT           shift and go to state 6
+    STRING          shift and go to state 7
+    ID              shift and go to state 5
+    FOR             shift and go to state 10
+    WHILE           shift and go to state 12
+    LBRACE          shift and go to state 13
+    IF              shift and go to state 14
+    LBRACKET        shift and go to state 16
+    NUMBER          shift and go to state 18
+    STRING_LITERAL  shift and go to state 9
+    LPAREN          shift and go to state 11
+
+    expression                     shift and go to state 8
+    statement                      shift and go to state 90
+    term                           shift and go to state 15
+    factor                         shift and go to state 17
+
+state 90
 
     (9) statement -> FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement .
 
@@ -2221,22 +2557,33 @@ state 83
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for SEMICOLON in state 45 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 45 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 45 resolved as shift
-WARNING: shift/reduce conflict for LOR in state 45 resolved as shift
-WARNING: shift/reduce conflict for LAND in state 45 resolved as shift
-WARNING: shift/reduce conflict for EQ in state 45 resolved as shift
-WARNING: shift/reduce conflict for NE in state 45 resolved as shift
-WARNING: shift/reduce conflict for LT in state 45 resolved as shift
-WARNING: shift/reduce conflict for GT in state 45 resolved as shift
-WARNING: shift/reduce conflict for SEMICOLON in state 46 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 71 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 71 resolved as shift
-WARNING: shift/reduce conflict for LOR in state 71 resolved as shift
-WARNING: shift/reduce conflict for LAND in state 71 resolved as shift
-WARNING: shift/reduce conflict for EQ in state 71 resolved as shift
-WARNING: shift/reduce conflict for NE in state 71 resolved as shift
-WARNING: shift/reduce conflict for LT in state 71 resolved as shift
-WARNING: shift/reduce conflict for GT in state 71 resolved as shift
-WARNING: shift/reduce conflict for ELSE in state 77 resolved as shift
+WARNING: shift/reduce conflict for SEMICOLON in state 47 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 47 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 47 resolved as shift
+WARNING: shift/reduce conflict for LOR in state 47 resolved as shift
+WARNING: shift/reduce conflict for LAND in state 47 resolved as shift
+WARNING: shift/reduce conflict for EQ in state 47 resolved as shift
+WARNING: shift/reduce conflict for NE in state 47 resolved as shift
+WARNING: shift/reduce conflict for LT in state 47 resolved as shift
+WARNING: shift/reduce conflict for GT in state 47 resolved as shift
+WARNING: shift/reduce conflict for TERNARY in state 47 resolved as shift
+WARNING: shift/reduce conflict for SEMICOLON in state 48 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 77 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 77 resolved as shift
+WARNING: shift/reduce conflict for LOR in state 77 resolved as shift
+WARNING: shift/reduce conflict for LAND in state 77 resolved as shift
+WARNING: shift/reduce conflict for EQ in state 77 resolved as shift
+WARNING: shift/reduce conflict for NE in state 77 resolved as shift
+WARNING: shift/reduce conflict for LT in state 77 resolved as shift
+WARNING: shift/reduce conflict for GT in state 77 resolved as shift
+WARNING: shift/reduce conflict for TERNARY in state 77 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 81 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 81 resolved as shift
+WARNING: shift/reduce conflict for LOR in state 81 resolved as shift
+WARNING: shift/reduce conflict for LAND in state 81 resolved as shift
+WARNING: shift/reduce conflict for EQ in state 81 resolved as shift
+WARNING: shift/reduce conflict for NE in state 81 resolved as shift
+WARNING: shift/reduce conflict for LT in state 81 resolved as shift
+WARNING: shift/reduce conflict for GT in state 81 resolved as shift
+WARNING: shift/reduce conflict for TERNARY in state 81 resolved as shift
+WARNING: shift/reduce conflict for ELSE in state 84 resolved as shift
