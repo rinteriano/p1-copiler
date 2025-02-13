@@ -9,7 +9,9 @@ precedence = (
     ('left', 'PLUS', 'MINUS'),
     ('left', 'EQ'),
     ('left', 'NE'),
-    ('left', 'TIMES', 'DIVIDE')
+    ('left', 'TIMES', 'DIVIDE'),
+    ('right', 'TERNARY'),  # Operador ternario
+    ('right', 'DECREMENT') # Operador de decremento
 )
 
 # Reglas de gramática
@@ -126,6 +128,19 @@ def p_elements_empty(p):
 
 def p_error(p):
     print("Error sintáctico en '%s'" % p.value if p else "Error en entrada")
+    
+def p_expression_decrement(p):
+    'expression : ID DECREMENT'
+    p[0] = ('decrement', p[1], '--')  # Agregamos el símbolo para mayor claridad
+
+def p_statement_decrement(p):
+    'statement : ID DECREMENT SEMICOLON'
+    p[0] = ('decrement_stmt', p[1])  
+  
+def p_expression_ternary(p):
+    'expression : expression TERNARY expression COLON expression'
+    p[0] = ('ternary', p[1], p[3], p[5])
+
 
 # Construir el analizador sintáctico
 parser = yacc.yacc()
