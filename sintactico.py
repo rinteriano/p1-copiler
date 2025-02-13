@@ -30,12 +30,23 @@ def p_statements(p):
 def p_statement_declaration(p):
     '''statement : INT ID SEMICOLON
                  | FLOAT ID SEMICOLON
-                 | STRING ID SEMICOLON'''
-    p[0] = ('declaration', p[1], p[2])
+                 | STRING ID SEMICOLON
+                 | BOOL ID SEMICOLON
+                 | INT ID EQUALS expression SEMICOLON
+                 | FLOAT ID EQUALS expression SEMICOLON
+                 | STRING ID EQUALS STRING_LITERAL SEMICOLON
+                 | BOOL ID EQUALS TRUE SEMICOLON
+                 | BOOL ID EQUALS FALSE SEMICOLON'''
+    if len(p) == 4:  # Solo declaración
+        p[0] = ('declaracion, =', p[1], p[2])
+    else:  # Declaración con asignación
+        p[0] = ('declaracion_asignacion, =', p[1], p[2], p[4])
 
 def p_statement_assignment(p):
     '''statement : ID EQUALS expression SEMICOLON
-                 | ID EQUALS STRING_LITERAL SEMICOLON'''
+                 | ID EQUALS STRING_LITERAL SEMICOLON
+                 | ID EQUALS TRUE SEMICOLON
+                 | ID EQUALS FALSE SEMICOLON'''
     p[0] = ('assignment, =', p[1], p[3])
 
 def p_statement_for(p):
@@ -101,6 +112,15 @@ def p_factor_string(p):
 def p_factor_id(p):
     'factor : ID'
     p[0] = ('id', p[1])
+
+def p_factor_true_false(p):
+    '''factor : TRUE
+              | FALSE'''
+    # p.slice[1].type, trae la palabra true o false
+    if p.slice[1].type == 'TRUE':
+        p[0] = ('bool_true', True)
+    else:
+        p[0] = ('bool_false', False)
 
 def p_factor_expr(p):
     'factor : LPAREN expression RPAREN'
