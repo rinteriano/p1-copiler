@@ -27,10 +27,12 @@ tokens = [
     'LT', 'GT', 'COMMA',
     'LOR', 'LAND',  # Añadidos los nuevos tokens
     'EQ', 'NE',
-    'DECREMENT',  # TOken de decremento --
-    'TERNARY' ,    # Token ternary ?
+    'DECREMENT',  # Token de decremento --
+    'TERNARY',    # Token ternary ?
     'COLON',
-    'LE', 'GE'
+    'LE', 'GE',
+    'LNOT',       # Token para operador lógico NOT (!)
+    'INCREMENT'   # Token para operador incremento (++)
 ] + list(words_reserved.values())
 
 # Reglas para los tokens
@@ -49,16 +51,17 @@ t_SEMICOLON = r';'
 t_LT = r'<'
 t_GT = r'>'
 t_COMMA = r','
-t_LOR = r'\|\|'  # Nuevo token para OR lógico
-t_LAND = r'&&'   # Nuevo token para AND lógico
+t_LOR = r'\|\|'  # OR lógico
+t_LAND = r'&&'   # AND lógico
 t_EQ = r'=='
 t_NE = r'!='
 t_DECREMENT = r'--'
 t_TERNARY = r'\?'
 t_COLON = r':'
-t_LE = r'<='   # Nuevo operador menor o igual
-t_GE = r'>='   # Nuevo operador mayor o igual
-
+t_LE = r'<='   # Menor o igual
+t_GE = r'>='   # Mayor o igual
+t_LNOT = r'!'  # NOT lógico
+t_INCREMENT = r'\+\+'  # Operador incremento ++
 
 # Reglas para números
 def t_FLOAT(t):
@@ -93,3 +96,4 @@ def t_error(t):
 
 # Construir el analizador léxico
 lexer = lex.lex()
+
