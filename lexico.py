@@ -29,7 +29,8 @@ tokens = [
     'EQ', 'NE',
     'DECREMENT',  # TOken de decremento --
     'TERNARY' ,    # Token ternary ?
-    'COLON'
+    'COLON',
+    'LE', 'GE'
 ] + list(words_reserved.values())
 
 # Reglas para los tokens
@@ -55,6 +56,8 @@ t_NE = r'!='
 t_DECREMENT = r'--'
 t_TERNARY = r'\?'
 t_COLON = r':'
+t_LE = r'<='   # Nuevo operador menor o igual
+t_GE = r'>='   # Nuevo operador mayor o igual
 
 
 # Reglas para números

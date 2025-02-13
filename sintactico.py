@@ -5,7 +5,7 @@ from lexico import tokens
 precedence = (
     ('left', 'LOR'),          # Operador OR lógico
     ('left', 'LAND'),         # Operador AND lógico
-    ('left', 'LT', 'GT'),     # Comparaciones
+    ('left', 'LT', 'GT', 'LE', 'GE'),     # Comparaciones
     ('left', 'PLUS', 'MINUS'),
     ('left', 'EQ'),
     ('left', 'NE'),
@@ -84,7 +84,9 @@ def p_expression_binop(p):
 
 def p_expression_comparison(p):
     '''expression : expression LT expression
-                  | expression GT expression'''
+                  | expression GT expression
+                  | expression LE expression
+                  | expression GE expression'''
     p[0] = ('comparison', p[2], p[1], p[3])
 
 def p_expression_term(p):
